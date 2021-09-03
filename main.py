@@ -1,0 +1,117 @@
+import pygame
+import levels
+import player
+import constants
+
+from pygame.locals import (
+    K_ESCAPE,
+    KEYDOWN,
+    QUIT,
+)
+
+class Cam():
+
+    # Camera component, follows the player when they move around the level
+    def __init__(self):
+        super(Cam, self).__init__()
+        self.x = 0
+        self.y = 0
+    
+    # Get center of the screen in x axis
+    def get_screen_center_x(self):
+        return cam.x - constants.SCREEN_WIDTH * .5
+    # Get center of the screen in y axis
+    def get_screen_center_y(self):
+        return cam.y - constants.SCREEN_HEIGHT * .5
+    # Set camera's position in x axis
+    def set_pos_x(self, set_x):
+        cam.x = -set_x
+    # Set camera's position in y axis
+    def set_pos_y(self, set_y):
+        cam.y = -set_y
+
+
+# Initialize pygame
+pygame.init()
+
+#
+active_sprites = pygame.sprite.Group()
+
+# Create the screen object
+# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
+screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
+
+# Set the level to load
+current_level = levels.TestLevel()
+active_sprites.add(current_level.wall_list)
+active_sprites.add(current_level.platform_list)
+
+# Initialize the player class and pass the current level to it, for collision detection
+player = player.Player(0,0)
+player.level = current_level
+active_sprites.add(player)
+
+# Initialize the camera class
+cam = Cam()
+
+# Variable to keep the main loop running
+running = True
+
+clock = pygame.time.Clock()
+
+# Main loop
+while running:
+
+    # Set the game to run at 60 FPS
+    clock.tick(60)
+
+    # Look at every event in the queue
+    for event in pygame.event.get():
+        # Did the user hit a key?
+        if event.type == KEYDOWN:
+
+            if event.key == pygame.K_SPACE:
+                player.jump()
+            # Was it the Escape key? If so, stop the loop.
+            if event.key == K_ESCAPE:
+                running = False
+
+        # Did the user click the window close button? If so, stop the loop.
+        elif event.type == QUIT:
+            running = False
+
+    # Draw the background of the current level
+    screen.blit(current_level.background, (0,0))
+
+    # Draw the walls and the platforms from the current level, which are drawn in relation to the position of the camera
+    """ for wall in current_level.wall_list:
+        screen.blit(wall.surf,(wall.rect.x + cam.x, wall.rect.y + cam.y))
+    
+    for plat in current_level.platform_list:
+        screen.blit(plat.surf,(plat.rect.x + cam.x, plat.rect.y + cam.y)) """
+
+    # Draw the player character
+    #screen.blit(player.image, (player.rect.x + cam.x, player.rect.y + cam.y))
+
+    for thing in active_sprites:
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+
+    # Update the state of the player
+    player.update()
+
+    # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
+    if player.rect.right + cam.get_screen_center_x() > 20:
+        cam.set_pos_x(player.rect.right - constants.SCREEN_WIDTH * .5 - 20)
+    
+    if player.rect.left + cam.get_screen_center_x() < -160:
+        cam.set_pos_x(player.rect.left - constants.SCREEN_WIDTH * .5 - -160)
+
+    if player.rect.bottom + cam.get_screen_center_y() > 60:
+        cam.set_pos_y(player.rect.bottom - constants.SCREEN_HEIGHT * .5 - 60)
+        
+    if player.rect.top + cam.get_screen_center_y() < -120:
+        cam.set_pos_y(player.rect.top - constants.SCREEN_HEIGHT * .5 - -120)
+
+    # Update the image
+    pygame.display.flip()
