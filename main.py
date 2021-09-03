@@ -2,6 +2,7 @@ import pygame
 import levels
 import player
 import constants
+import globals
 
 from pygame.locals import (
     K_ESCAPE,
@@ -35,7 +36,6 @@ class Cam():
 pygame.init()
 
 #
-active_sprites = pygame.sprite.Group()
 
 # Create the screen object
 # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
@@ -44,13 +44,13 @@ screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGH
 
 # Set the level to load
 current_level = levels.TestLevel()
-active_sprites.add(current_level.wall_list)
-active_sprites.add(current_level.platform_list)
+globals.active_sprites.add(current_level.wall_list)
+globals.active_sprites.add(current_level.platform_list)
 
 # Initialize the player class and pass the current level to it, for collision detection
 player = player.Player(0,0)
 player.level = current_level
-active_sprites.add(player)
+globals.active_sprites.add(player)
 
 # Initialize the camera class
 cam = Cam()
@@ -94,11 +94,12 @@ while running:
     # Draw the player character
     #screen.blit(player.image, (player.rect.x + cam.x, player.rect.y + cam.y))
 
-    for thing in active_sprites:
+    # Draw active sprites, in relation to the camera's position
+    for thing in globals.active_sprites:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
-    # Update the state of the player
-    player.update()
+    # Update the active sprites
+    globals.active_sprites.update()
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
     if player.rect.right + cam.get_screen_center_x() > 20:

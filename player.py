@@ -1,5 +1,7 @@
 import pygame
 import spritesheet
+import globals
+import projectiles
 import constants
 
 from pygame.locals import (
@@ -99,34 +101,39 @@ class Player(pygame.sprite.Sprite):
         """ Use floor division to control the speed of animation
             ex: run_duration // 5 means every five frames, it advances to the next sprite of the animation"""
 
-        if self.run_duration // 5 >= len(self.run_right):
+        if self.run_duration // 4 >= len(self.run_right):
             # Once it reaches the last sprite, reset the counter
             self.run_duration = 0
 
         # If character is facing right, use the right facing sprites. Otherwise use left.
         if (self.direction == 'r'):
-            self.surf = self.run_right[self.run_duration // 5]
+            self.surf = self.run_right[self.run_duration // 4]
         else:
-            self.surf = self.run_left[self.run_duration // 5]
+            self.surf = self.run_left[self.run_duration // 4]
         # Increase the counter by one
         self.run_duration += 1
 
+    # Update the player character
     def update(self):
-
+        # Get what keys are being pressed
         pressed_keys = pygame.key.get_pressed()
 
+        # Set the ground check actor below the player character
         self.groundcheck.setpos(self.rect.x,self.rect.bottom)
 
+        # Call the move function, pass the keypresses to it
         self.move(pressed_keys)
 
+        # Move the character down, to make it fall. Cap the falling speed at the maximum defined
         if(self.change_y <= self.max_fall_speed):
             self.change_y += .5
         else:
             self.change_y = self.max_fall_speed
         
-
+        # Makes the player character move
         self.rect.x += self.change_x
 
+        # Check for collision horizontally, prevent the character from moving through walls
         wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for wall in wallhits:
             if self.change_x > 0:
@@ -136,26 +143,40 @@ class Player(pygame.sprite.Sprite):
         
         self.rect.y += self.change_y
 
+        # Check for collision vertically, prevent the character from falling or jumping through walls
         wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for wall in wallhits:
             if self.change_y > 0:
                 self.rect.bottom = wall.rect.top
             elif self.change_y < 0:
                 self.rect.top = wall.rect.bottom      
-
+            # Stop the character falling if there's something below him
             self.change_y = 0
     
+        # Check for collision on platforms, the player can move and jump through them, while being able to land and stand on top of them
         platformhits = pygame.sprite.spritecollide(self, self.level.platform_list, False)
         for plat in platformhits:
             if self.change_y > 0:
                 if self.rect.bottom - self.change_y < plat.rect.bottom and not pressed_keys[K_DOWN]:
                    self.rect.bottom = plat.rect.top
                    self.change_y = 0
+
+    # Function for firing the gun
+    def shoot(self):
+        proj = projectiles.Projectile(self.rect.right,self.rect.centery,16,0)
+        globals.active_sprites.add(proj)
             
+    # Jumping function
     def jump(self):
+        # Check if the player character is on ground before allowing them to jump
         if (self.is_grounded()):
             self.change_y = -13
+
+    # Function for checking if player is on ground
     def is_grounded(self):
+        """ Get collision from walls and platforms, check if they collide with the ground check actor
+        If there is collision, character is on ground and returns True
+        Else, the character is off the ground and returns False """
         hits = pygame.sprite.spritecollide(self.groundcheck, self.level.wall_list, False)
         hits.extend(pygame.sprite.spritecollide(self.groundcheck, self.level.platform_list, False))
         if hits:
@@ -164,7 +185,7 @@ class Player(pygame.sprite.Sprite):
         return False
         
         
-
+# Class to help check if the player character is on ground
 class GroundCheck(pygame.sprite.Sprite):
     def __init__(self,x):
         self.surf = pygame.Surface((x,4))
