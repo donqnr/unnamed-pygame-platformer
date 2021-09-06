@@ -5,6 +5,7 @@ import projectiles
 import constants
 
 from pygame.locals import (
+    KEYDOWN,
     K_DOWN,
     K_LEFT,
     K_RIGHT,
@@ -14,6 +15,7 @@ from pygame.locals import (
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super(Player, self).__init__()
+        pygame.sprite.Sprite.__init__(self)
         # Load the sprite sheet for the player character
         self.spritesheet = spritesheet.SpriteSheet("assets/sprites/player.png", 3)
         # Set the direction the player will be facing
@@ -55,6 +57,7 @@ class Player(pygame.sprite.Sprite):
         self.change_y = 0     
         # Initialize class that's used to check if the player is on ground
         self.groundcheck = GroundCheck(self.rect.width)
+        #globals.active_sprites.add(self.groundcheck)
         
     # Movement function
     def move(self, pressed_keys):
@@ -115,6 +118,7 @@ class Player(pygame.sprite.Sprite):
 
     # Update the player character
     def update(self):
+
         # Get what keys are being pressed
         pressed_keys = pygame.key.get_pressed()
 
@@ -163,13 +167,19 @@ class Player(pygame.sprite.Sprite):
 
     # Function for firing the gun
     def shoot(self):
-        proj = projectiles.Projectile(self.rect.right,self.rect.centery,16,0)
+        if self.direction == 'l':
+            shotx = self.rect.left + 12
+            shotspeed = -16
+        else:
+            shotx = self.rect.right - 12
+            shotspeed = 16
+        proj = projectiles.Projectile(shotx,self.rect.centery - 4,shotspeed,0)
         globals.active_sprites.add(proj)
             
     # Jumping function
     def jump(self):
         # Check if the player character is on ground before allowing them to jump
-        if (self.is_grounded()):
+        if self.is_grounded():
             self.change_y = -13
 
     # Function for checking if player is on ground
@@ -188,6 +198,7 @@ class Player(pygame.sprite.Sprite):
 # Class to help check if the player character is on ground
 class GroundCheck(pygame.sprite.Sprite):
     def __init__(self,x):
+        pygame.sprite.Sprite.__init__(self)
         self.surf = pygame.Surface((x,4))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()

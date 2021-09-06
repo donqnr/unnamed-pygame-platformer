@@ -21,4 +21,5 @@ class TestLevel(Level):
 
         self.platform_list = [platforms.Platform(400,5,0,475)]
         
-        self.wall_list = [platforms.Wall(1600,50,-800,550),]
+        self.wall_list = [platforms.Wall(1600,50,-800,550),
+                        platforms.Wall(50,250,800,450),]

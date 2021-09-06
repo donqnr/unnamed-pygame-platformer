@@ -6,6 +6,7 @@ import globals
 
 from pygame.locals import (
     K_ESCAPE,
+    K_PAUSE,
     KEYDOWN,
     QUIT,
 )
@@ -43,13 +44,13 @@ flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
 # Set the level to load
-current_level = levels.TestLevel()
-globals.active_sprites.add(current_level.wall_list)
-globals.active_sprites.add(current_level.platform_list)
+globals.current_level = levels.TestLevel()
+globals.active_sprites.add(globals.current_level.wall_list) 
+globals.active_sprites.add(globals.current_level.platform_list)
 
 # Initialize the player class and pass the current level to it, for collision detection
-player = player.Player(0,0)
-player.level = current_level
+player = player.Player(0,250)
+player.level = globals.current_level
 globals.active_sprites.add(player)
 
 # Initialize the camera class
@@ -60,19 +61,30 @@ running = True
 
 clock = pygame.time.Clock()
 
+
 # Main loop
 while running:
 
     # Set the game to run at 60 FPS
-    clock.tick(60)
+    clock.tick(constants.FRAMERATE)
 
+    # Input handling should probably be in it's own class
     # Look at every event in the queue
     for event in pygame.event.get():
         # Did the user hit a key?
         if event.type == KEYDOWN:
-
-            if event.key == pygame.K_SPACE:
+            # If the key was spacebar, try to jump
+            if event.key == pygame.K_SPACE and not globals.paused:
                 player.jump()
+            # If the key was left ctrl, try to shoot
+            if event.key == pygame.K_LCTRL and not globals.paused:
+                player.shoot()
+            # If the key was pause, pause the game
+            if event.key == pygame.K_PAUSE:
+                if globals.paused:
+                    globals.paused = False
+                else:
+                    globals.paused = True
             # Was it the Escape key? If so, stop the loop.
             if event.key == K_ESCAPE:
                 running = False
@@ -82,13 +94,13 @@ while running:
             running = False
 
     # Draw the background of the current level
-    screen.blit(current_level.background, (0,0))
+    screen.blit(globals.current_level.background, (0,0))
 
     # Draw the walls and the platforms from the current level, which are drawn in relation to the position of the camera
-    """ for wall in current_level.wall_list:
+    """ for wall in globals.current_level.wall_list:
         screen.blit(wall.surf,(wall.rect.x + cam.x, wall.rect.y + cam.y))
     
-    for plat in current_level.platform_list:
+    for plat in globals.current_level.platform_list:
         screen.blit(plat.surf,(plat.rect.x + cam.x, plat.rect.y + cam.y)) """
 
     # Draw the player character
@@ -98,8 +110,9 @@ while running:
     for thing in globals.active_sprites:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
-    # Update the active sprites
-    globals.active_sprites.update()
+    # Update the active sprites, unless the game is paused
+    if not globals.paused:
+        globals.active_sprites.update()
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
     if player.rect.right + cam.get_screen_center_x() > 20:
