@@ -98,6 +98,8 @@ class Player(pygame.sprite.Sprite):
                 self.surf = self.spritesheet.get_image(10,34, 16, 17)
             else:
                 self.surf = self.spritesheet.get_image(46,34, 16, 17)
+        # Makes the player character move
+        self.rect.x += self.change_x
 
     # Run animation function
     def run_anim(self):
@@ -128,15 +130,16 @@ class Player(pygame.sprite.Sprite):
         # Call the move function, pass the keypresses to it
         self.move(pressed_keys)
 
+        self.collision_detection(pressed_keys)
+
         # Move the character down, to make it fall. Cap the falling speed at the maximum defined
         if(self.change_y <= self.max_fall_speed):
             self.change_y += .5
         else:
             self.change_y = self.max_fall_speed
         
-        # Makes the player character move
-        self.rect.x += self.change_x
 
+    def collision_detection(self, pressed_keys):
         # Check for collision horizontally, prevent the character from moving through walls
         wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for wall in wallhits:
@@ -168,13 +171,13 @@ class Player(pygame.sprite.Sprite):
     # Function for firing the gun
     def shoot(self):
         if self.direction == 'l':
-            shotx = self.rect.left + 12
+            shotx = self.rect.left
             shotspeed = -16
         else:
-            shotx = self.rect.right - 12
+            shotx = self.rect.right - 16
             shotspeed = 16
         proj = projectiles.Projectile(shotx,self.rect.centery - 4,shotspeed,0)
-        globals.active_sprites.add(proj)
+        proj.level = self.level
             
     # Jumping function
     def jump(self):

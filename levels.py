@@ -2,6 +2,7 @@ import pygame
 
 import platforms
 import constants
+import enemies
 
 class Level():
     """ Super-class for levels, each level is a child class of this """
@@ -10,6 +11,7 @@ class Level():
         # Set up lists for platforms and walls
         self.platform_list = pygame.sprite.Group()
         self.wall_list = pygame.sprite.Group()
+        self.enemy_list = pygame.sprite.Group()
         # Set the background image for the level
         self.background = None
 
@@ -22,4 +24,7 @@ class TestLevel(Level):
         self.platform_list = [platforms.Platform(400,5,0,475)]
         
         self.wall_list = [platforms.Wall(1600,50,-800,550),
-                        platforms.Wall(50,250,800,450),]
+                        platforms.Wall(50,250,800,450),
+                        platforms.Wall(50,250,-800,450),]
+                
+        self.enemy_list = [enemies.Enemy(200, 400)]

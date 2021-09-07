@@ -44,14 +44,20 @@ flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
 # Set the level to load
-globals.current_level = levels.TestLevel()
-globals.active_sprites.add(globals.current_level.wall_list) 
-globals.active_sprites.add(globals.current_level.platform_list)
+current_level = levels.TestLevel()
+
 
 # Initialize the player class and pass the current level to it, for collision detection
 player = player.Player(0,250)
-player.level = globals.current_level
+player.level = current_level
+
+globals.active_sprites.add(current_level.wall_list) 
+globals.active_sprites.add(current_level.platform_list)
 globals.active_sprites.add(player)
+globals.active_sprites.add(current_level.enemy_list)
+
+for enemy in current_level.enemy_list:
+    enemy.level = current_level
 
 # Initialize the camera class
 cam = Cam()
@@ -94,13 +100,13 @@ while running:
             running = False
 
     # Draw the background of the current level
-    screen.blit(globals.current_level.background, (0,0))
+    screen.blit(current_level.background, (0,0))
 
     # Draw the walls and the platforms from the current level, which are drawn in relation to the position of the camera
-    """ for wall in globals.current_level.wall_list:
+    """ for wall in current_level.wall_list:
         screen.blit(wall.surf,(wall.rect.x + cam.x, wall.rect.y + cam.y))
     
-    for plat in globals.current_level.platform_list:
+    for plat in current_level.platform_list:
         screen.blit(plat.surf,(plat.rect.x + cam.x, plat.rect.y + cam.y)) """
 
     # Draw the player character

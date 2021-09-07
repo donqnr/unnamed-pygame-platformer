@@ -16,6 +16,8 @@ class Projectile(pygame.sprite.Sprite):
         self.lifespan = 4 * 60
         self.lifetime = 0
         self.state = "spawn"
+        globals.active_sprites.add(self)
+        self.level = None
         self.deathanimtime = 0
         self.deathanim = [self.sheet.get_image(1, 10, 12, 12),
                         self.sheet.get_image(15, 10, 12, 12),
@@ -24,22 +26,38 @@ class Projectile(pygame.sprite.Sprite):
     def update(self):
         if self.state == "spawn":
             self.spawn()
-        else:
+        elif self.state == "death":
             self.death()
+        elif self.state == "predeath":
+            self.predeath()
+        else:
+            pygame.sprite.Sprite.kill(self)
+
+    def predeath(self):
+        self.rect.x -= 4
+        self.rect.y -= 4
+        self.state = "death"
+
     def death(self):
         if self.deathanimtime // 4 >= len(self.deathanim):
-            # Once it reaches the last sprite, kill the actor
             pygame.sprite.Sprite.kill(self)
         else:
             self.surf = self.deathanim[self.deathanimtime // 4]
             self.deathanimtime += 1
+
     def spawn(self):
         self.rect.x += self.speed_x
         self.lifetime += 1
         if self.lifetime >= self.lifespan:
-            self.state = "death"
-        hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
+            self.state = "predeath"
+        
+        hits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for hit in hits:
-            self.state = "death"
+            self.state = "predeath"
+
+        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
+        for hit in hits:
+            hit.takedamage(1)
+            self.state = "predeath"
 
 
