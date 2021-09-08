@@ -6,13 +6,14 @@ class Projectile(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, speed_x, speed_y):
         super(Projectile, self).__init__()
         pygame.sprite.Sprite.__init__(self)
-        self.sheet = spritesheet.SpriteSheet("assets/sprites/projectiles.png", 3)
+        self.sheet = spritesheet.SpriteSheet("assets/sprites/projectiles.png", 1)
         self.surf = self.sheet.get_image(1,1,8,8)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
         self.speed_x = speed_x
         self.speed_y = speed_y
+        self.damage = 1
         self.lifespan = 4 * 60
         self.lifetime = 0
         self.state = "spawn"
@@ -57,7 +58,9 @@ class Projectile(pygame.sprite.Sprite):
 
         hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
         for hit in hits:
-            hit.takedamage(1)
+            try:
+                hit.takedamage(self.damage)
+            except AttributeError:
+                pass
             self.state = "predeath"
-
 

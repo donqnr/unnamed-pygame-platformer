@@ -8,14 +8,14 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super(Enemy, self).__init__()
         pygame.sprite.Sprite.__init__(self)
-        self.sheet = spritesheet.SpriteSheet("assets/sprites/enemies2.png", 3)
-        self.surf = self.sheet.get_image(1,32,16,14)
+        self.sheet = spritesheet.SpriteSheet("assets/sprites/enemies2.png", 1)
+        self.surf = self.sheet.get_image(1,31,16,13)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
         self.change_y = 0
         self.change_x = 0
-        self.max_fall_speed = 40
+        self.max_fall_speed = 5
         globals.enemy_sprites.add(self)
         self.level = None
         self.hp = 4
@@ -35,7 +35,7 @@ class Enemy(pygame.sprite.Sprite):
     def alive(self):
         # Move the character down, to make it fall. Cap the falling speed at the maximum defined
         if(self.change_y <= self.max_fall_speed):
-            self.change_y += .5
+            self.change_y += .2
         else:
             self.change_y = self.max_fall_speed
 
@@ -46,7 +46,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def collision_detection(self):
         # Check for collision horizontally, prevent the character from moving through walls
-        wallhits = pygame.sprite.spritecollide(self, self.level.platform_list, False)
+        wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for wall in wallhits:
             if self.change_x > 0:
                 self.rect.right = wall.rect.left
@@ -56,7 +56,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y += self.change_y
 
         # Check for collision vertically, prevent the character from falling or jumping through walls
-        wallhits = pygame.sprite.spritecollide(self, self.level.platform_list, False)
+        wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for wall in wallhits:
             if self.change_y > 0:
                 self.rect.bottom = wall.rect.top

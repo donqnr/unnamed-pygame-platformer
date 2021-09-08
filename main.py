@@ -48,7 +48,7 @@ current_level = levels.TestLevel()
 
 
 # Initialize the player class and pass the current level to it, for collision detection
-player = player.Player(0,250)
+player = player.Player(0,50)
 player.level = current_level
 
 globals.active_sprites.add(current_level.wall_list) 
@@ -70,6 +70,7 @@ clock = pygame.time.Clock()
 
 # Main loop
 while running:
+
 
     # Set the game to run at 60 FPS
     clock.tick(constants.FRAMERATE)
@@ -121,17 +122,17 @@ while running:
         globals.active_sprites.update()
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
-    if player.rect.right + cam.get_screen_center_x() > 20:
-        cam.set_pos_x(player.rect.right - constants.SCREEN_WIDTH * .5 - 20)
+    if player.rect.right + cam.get_screen_center_x() > 5:
+        cam.set_pos_x(player.rect.right - constants.SCREEN_WIDTH * .5 - 5)
     
-    if player.rect.left + cam.get_screen_center_x() < -160:
-        cam.set_pos_x(player.rect.left - constants.SCREEN_WIDTH * .5 - -160)
+    if player.rect.left + cam.get_screen_center_x() < -40:
+        cam.set_pos_x(player.rect.left - constants.SCREEN_WIDTH * .5 - -40)
 
-    if player.rect.bottom + cam.get_screen_center_y() > 60:
-        cam.set_pos_y(player.rect.bottom - constants.SCREEN_HEIGHT * .5 - 60)
+    if player.rect.bottom + cam.get_screen_center_y() > 15:
+        cam.set_pos_y(player.rect.bottom - constants.SCREEN_HEIGHT * .5 - 15)
         
-    if player.rect.top + cam.get_screen_center_y() < -120:
-        cam.set_pos_y(player.rect.top - constants.SCREEN_HEIGHT * .5 - -120)
+    if player.rect.top + cam.get_screen_center_y() < -30:
+        cam.set_pos_y(player.rect.top - constants.SCREEN_HEIGHT * .5 - -30)
 
     # Update the image
     pygame.display.flip()
