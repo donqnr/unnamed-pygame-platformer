@@ -3,6 +3,7 @@ import levels
 import player
 import constants
 import globals
+import cam
 
 from pygame.locals import (
     K_ESCAPE,
@@ -11,7 +12,7 @@ from pygame.locals import (
     QUIT,
 )
 
-class Cam():
+""" class Cam():
 
     # Camera component, follows the player when they move around the level
     def __init__(self):
@@ -30,7 +31,7 @@ class Cam():
         cam.x = -set_x
     # Set camera's position in y axis
     def set_pos_y(self, set_y):
-        cam.y = -set_y
+        cam.y = -set_y """
 
 
 # Initialize pygame
@@ -48,7 +49,7 @@ current_level = levels.TestLevel()
 
 
 # Initialize the player class and pass the current level to it, for collision detection
-player = player.Player(0,50)
+player = player.Player(current_level.player_start[0],current_level.player_start[1] )
 player.level = current_level
 
 globals.active_sprites.add(current_level.wall_list) 
@@ -60,7 +61,7 @@ for enemy in current_level.enemy_list:
     enemy.level = current_level
 
 # Initialize the camera class
-cam = Cam()
+cam = cam.Cam()
 
 # Variable to keep the main loop running
 running = True

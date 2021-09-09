@@ -11,11 +11,12 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
 
-# Test class for walls, which block the player from all sides
+# Parent class for walls/platforms
 class Wall(pygame.sprite.Sprite):
 
     def __init__(self, size_x, size_y, pos_x, pos_y):
         super(Wall, self).__init__()
+        self.sheet = SpriteSheet("assets/tiles/tiles.png", 1)
         self.surf = pygame.Surface((size_x,size_y))
         self.surf.fill((0, 255, 255))
         self.rect = self.surf.get_rect()
@@ -30,7 +31,7 @@ class Platform(Wall):
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
 
-class Gray_Tile_01(Wall):
+class Tan_Tile_01(Wall):
     def __init__(self, pos_x, pos_y):
         super(Wall, self).__init__()
         self.sheet = SpriteSheet("assets/tiles/tiles.png", 1)
@@ -38,3 +39,10 @@ class Gray_Tile_01(Wall):
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
 
+class Ground_Tile_01(Wall):
+    def __init__(self, pos_x, pos_y):
+        super(Wall, self).__init__()
+        self.sheet = SpriteSheet("assets/tiles/tiles.png", 1)
+        self.surf = self.sheet.get_image(8, 0 ,16 ,16)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)

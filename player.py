@@ -178,7 +178,7 @@ class Player(pygame.sprite.Sprite):
     # Function for firing the gun
     def shoot(self):
         if self.direction == 'l':
-            shotx = self.rect.left
+            shotx = self.rect.left - 6
             shotspeed = -6
         else:
             shotx = self.rect.right
