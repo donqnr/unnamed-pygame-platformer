@@ -1,5 +1,6 @@
 import pygame
-import csv
+import json
+
 import globals
 import constants
 import levels
@@ -9,7 +10,6 @@ import player
 
 from pygame.locals import (
     K_ESCAPE,
-    K_PAUSE,
     K_w,
     K_a,
     K_s,
@@ -18,6 +18,7 @@ from pygame.locals import (
     K_UP,
     KEYDOWN,
     QUIT,
+    K_F6,
 )
 
 """ A rudimentary level editor """
@@ -34,6 +35,16 @@ class CursorPosition(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+def save_level(list):
+    with open("saved_level.json", 'w') as file:
+        data = [(str(wall.name), wall.rect.topleft)
+                for wall in list]
+        json.dump(data, file)
+
+def load_level():
+    with open("saved_level.json, 'r") as file:
+        data = json.load(file)
+        
 
 # Initialize pygame
 pygame.init()
@@ -77,6 +88,7 @@ selected_block = 1
 cursorpos = CursorPosition()
 
 wall_list = pygame.sprite.Group()
+save_list = []
 
 
 # Main loop
@@ -103,6 +115,8 @@ while running:
                 if selected_block < 0:
                     selected_block = len(blocklist) - 1                    
                 print(str(selected_block))
+            if event.key == K_F6:
+                save_level(wall_list)
 
         # Did the user click the window close button? If so, stop the loop.
         elif event.type == QUIT:
@@ -153,4 +167,5 @@ while running:
 
 
     pygame.display.update()
+
 
