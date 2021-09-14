@@ -1,6 +1,6 @@
 import pygame
 import spritesheet
-import globals
+import vars
 import projectiles
 import constants
 
@@ -49,12 +49,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = pos_x
         self.rect.y = pos_y
         # Set the maximum falling speed
-        self.max_fall_speed = 5
+        self.max_fall_speed = 4.0
         # Get the currently loaded level, used for collision detection
         self.level = None
         # Variables for movement
-        self.change_x = 0
-        self.change_y = 0     
+        self.change_x = 0.0
+        self.change_y = 0.0
         # Initialize class that's used to check if the player is on ground
         self.groundcheck = GroundCheck(self.rect.width)
         self.muzzleflash = MuzzleFlash(self)
@@ -77,14 +77,14 @@ class Player(pygame.sprite.Sprite):
             # Call the move function, pass the keypresses to it
             self.move(pressed_keys)
 
-
         self.collision_detection(pressed_keys)
 
         # Move the character down, to make it fall. Cap the falling speed at the maximum defined
         if(self.change_y <= self.max_fall_speed):
-            self.change_y += .2
+            self.change_y += 0.2
         else:
             self.change_y = self.max_fall_speed
+        print(str(self.change_y))
 
     # Movement function
     def move(self, pressed_keys):
@@ -153,7 +153,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.right = wall.rect.left
             if self.change_x < 0:
                 self.rect.left = wall.rect.right
-        
+
         self.rect.y += self.change_y
 
         # Check for collision vertically, prevent the character from falling or jumping through walls
@@ -213,7 +213,7 @@ class GroundCheck(pygame.sprite.Sprite):
         self.surf = pygame.Surface((x,1))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        #globals.active_sprites.add(self)
+        #vars.active_sprites.add(self)
 
     def setpos(self, x, y):
         self.rect.x = x
@@ -231,7 +231,7 @@ class MuzzleFlash(pygame.sprite.Sprite):
         self.owner = owner
     def flash(self, dur):
         self.setpos()
-        globals.active_sprites.add(self)
+        vars.active_sprites.add(self)
         self.duration = dur
         self.counter = 0
     def update(self):

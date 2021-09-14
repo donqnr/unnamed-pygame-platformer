@@ -1,6 +1,6 @@
 import pygame
 import spritesheet
-import globals
+import vars
 
 # A lot of code copied from the player class, could refactor these and have them be a child of a more general character class
 
@@ -16,7 +16,7 @@ class Enemy(pygame.sprite.Sprite):
         self.change_y = 0
         self.change_x = 0
         self.max_fall_speed = 5
-        globals.enemy_sprites.add(self)
+        vars.enemy_sprites.add(self)
         self.level = None
         self.hp = 4
         self.state = "alive"

@@ -1,8 +1,12 @@
+import sys
 import pygame
 
 import platforms
 import constants
 import enemies
+import json
+import things
+
 
 class Level():
     """ Super-class for levels, each level is a child class of this """
@@ -16,14 +20,25 @@ class Level():
         # Set the background image for the level
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
 
+    def build_level(self, level_file):
+        with open(level_file, 'r') as file:
+            data = json.load(file)
+            for block, pos, thingtype in data:
+                thing = getattr(things, block)(pos[0],pos[1])
+                if thing.type == "wall":
+                    self.wall_list.add(thing)
+                elif thing.type == "enemy":
+                    self.enemy_list.add(thing)
+
 class TestLevel(Level):
     def __init__(self):
         Level.__init__(self)
+        super(Level, self).__init__()
 
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
         self.player_start = (0, 50 - 1)
 
-        self.platform_list = [#platforms.Platform(100,1,0,120),
+        self.platform_list = [
                             platforms.Tan_Tile_01(48,128),
                             platforms.Tan_Tile_01(56,128),
                             platforms.Tan_Tile_01(64,128),
@@ -49,3 +64,12 @@ class TestLevel(Level):
 class BlankLevel(Level):
     def __init__(self):
         Level.__init__(self)
+        super(Level, self).__init__()
+
+class Customlevel(Level):
+    def __init__(self):
+        Level.__init__(self)
+        super(Level, self).__init__()
+
+        self.build_level("saved_level.json")
+

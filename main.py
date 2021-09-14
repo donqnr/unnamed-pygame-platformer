@@ -2,7 +2,7 @@ import pygame
 import levels
 import player
 import constants
-import globals
+import vars
 import cam
 
 from pygame.locals import (
@@ -15,7 +15,7 @@ from pygame.locals import (
 # Initialize pygame
 pygame.init()
 
-#
+
 
 # Create the screen object
 # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
@@ -23,17 +23,17 @@ flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
 # Set the level to load
-current_level = levels.TestLevel()
+current_level = levels.Customlevel()
 
 
 # Initialize the player class and pass the current level to it, for collision detection
 player = player.Player(current_level.player_start[0],current_level.player_start[1] )
 player.level = current_level
 
-globals.active_sprites.add(current_level.wall_list) 
-globals.active_sprites.add(current_level.platform_list)
-globals.active_sprites.add(player)
-globals.active_sprites.add(current_level.enemy_list)
+vars.active_sprites.add(current_level.wall_list) 
+vars.active_sprites.add(current_level.platform_list)
+vars.active_sprites.add(player)
+vars.active_sprites.add(current_level.enemy_list)
 
 for enemy in current_level.enemy_list:
     enemy.level = current_level
@@ -60,17 +60,17 @@ while running:
         # Did the user hit a key?
         if event.type == KEYDOWN:
             # If the key was spacebar, try to jump
-            if event.key == pygame.K_SPACE and not globals.paused:
+            if event.key == pygame.K_SPACE and not vars.paused:
                 player.jump()
             # If the key was left ctrl, try to shoot
-            if event.key == pygame.K_LCTRL and not globals.paused:
+            if event.key == pygame.K_LCTRL and not vars.paused:
                 player.shoot()
             # If the key was pause, pause the game
             if event.key == pygame.K_PAUSE:
-                if globals.paused:
-                    globals.paused = False
+                if vars.paused:
+                    vars.paused = False
                 else:
-                    globals.paused = True
+                    vars.paused = True
             # Was it the Escape key? If so, stop the loop.
             if event.key == K_ESCAPE:
                 running = False
@@ -93,12 +93,12 @@ while running:
     #screen.blit(player.image, (player.rect.x + cam.x, player.rect.y + cam.y))
 
     # Draw active sprites, in relation to the camera's position
-    for thing in globals.active_sprites:
+    for thing in vars.active_sprites:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
     # Update the active sprites, unless the game is paused
-    if not globals.paused:
-        globals.active_sprites.update()
+    if not vars.paused:
+        vars.active_sprites.update()
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
     if player.rect.right + cam.get_screen_center_x() > 5:

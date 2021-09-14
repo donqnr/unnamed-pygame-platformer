@@ -1,6 +1,6 @@
 import pygame
 import spritesheet
-import globals
+import vars
 
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, speed_x, speed_y):
@@ -17,7 +17,7 @@ class Projectile(pygame.sprite.Sprite):
         self.lifespan = 4 * 60
         self.lifetime = 0
         self.state = "spawn"
-        globals.active_sprites.add(self)
+        vars.active_sprites.add(self)
         self.level = None
         self.deathanimtime = 0
         self.deathanim = [self.sheet.get_image(1, 10, 12, 12),
@@ -56,7 +56,7 @@ class Projectile(pygame.sprite.Sprite):
         for hit in hits:
             self.state = "predeath"
 
-        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
+        hits = pygame.sprite.spritecollide(self, vars.enemy_sprites, False)
         for hit in hits:
             try:
                 hit.takedamage(self.damage)
