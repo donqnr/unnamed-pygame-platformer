@@ -16,7 +16,7 @@ class Level():
         self.platform_list = pygame.sprite.Group()
         self.wall_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
-        self.player_start = (0,0 - 1)
+        self.player_start = (0,0)
         # Set the background image for the level
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
 
@@ -36,7 +36,7 @@ class TestLevel(Level):
         super(Level, self).__init__()
 
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
-        self.player_start = (0, 50 - 1)
+        self.player_start = (0, 50)
 
         self.platform_list = [
                             platforms.Tan_Tile_01(48,128),

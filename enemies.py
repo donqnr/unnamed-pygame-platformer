@@ -72,3 +72,4 @@ class Enemy(pygame.sprite.Sprite):
                 if self.rect.bottom - self.change_y < plat.rect.bottom:
                    self.rect.bottom = plat.rect.top
                    self.change_y = 0
+                   

@@ -12,10 +12,16 @@ from pygame.locals import (
     QUIT,
 )
 
+# Function to check if a sprite is near or in the viewport
+def is_onscreen(thing):
+    # Apologies for this abomination of a line
+    if thing.rect.centerx <= player.rect.centerx + constants.SCREEN_WIDTH and thing.rect.centerx >= player.rect.centerx - constants.SCREEN_WIDTH and thing.rect.centery <= player.rect.centery + constants.SCREEN_HEIGHT and thing.rect.centery >= player.rect.centery - constants.SCREEN_HEIGHT:
+        return True
+
+    return False
+
 # Initialize pygame
 pygame.init()
-
-
 
 # Create the screen object
 # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
@@ -89,16 +95,15 @@ while running:
     for plat in current_level.platform_list:
         screen.blit(plat.surf,(plat.rect.x + cam.x, plat.rect.y + cam.y)) """
 
-    # Draw the player character
-    #screen.blit(player.image, (player.rect.x + cam.x, player.rect.y + cam.y))
-
-    # Draw active sprites, in relation to the camera's position
+    # Draw active sprites, in relation to the camera's position. Update when not paused
     for thing in vars.active_sprites:
-        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+        if not vars.paused and is_onscreen(thing):
+            thing.update()
+            screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
-    # Update the active sprites, unless the game is paused
+    """ # Update the active sprites, unless the game is paused
     if not vars.paused:
-        vars.active_sprites.update()
+        vars.active_sprites.update() """
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
     if player.rect.right + cam.get_screen_center_x() > 5:
@@ -114,4 +119,4 @@ while running:
         cam.set_pos_y(player.rect.top - constants.SCREEN_HEIGHT * .5 - -30)
 
     # Update the image
-    pygame.display.flip()
+    pygame.display.update()

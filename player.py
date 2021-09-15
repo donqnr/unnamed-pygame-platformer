@@ -46,6 +46,7 @@ class Player(pygame.sprite.Sprite):
         self.surf = self.spritesheet.get_image(10,8, 16, 17)
         # Initialize rect, set the starting position
         self.rect = self.surf.get_rect()
+        self.rect.inflate_ip(0, -1)
         self.rect.x = pos_x
         self.rect.y = pos_y
         # Set the maximum falling speed
