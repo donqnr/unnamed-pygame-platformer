@@ -1,6 +1,5 @@
 from spritesheet import SpriteSheet
 import pygame
-import sys
 
 # Test class for platforms, which allow the player to jump through them and stand on top of them
 # Parent class for walls/platforms

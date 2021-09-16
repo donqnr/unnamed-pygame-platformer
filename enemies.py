@@ -73,3 +73,39 @@ class Enemy(pygame.sprite.Sprite):
                    self.rect.bottom = plat.rect.top
                    self.change_y = 0
                    
+class Enemy_01(Enemy):
+    def __init__(self, pos_x, pos_y):
+        super(Enemy, self).__init__()
+        pygame.sprite.Sprite.__init__(self)
+        Enemy.__init__(self,pos_x,pos_y)
+        self.direction = 'l'
+
+        self.run_left = [self.sheet.get_image(19,31,16,14),
+                        self.sheet.get_image(37,31,16,14),
+                        self.sheet.get_image(55,31,16,14),]
+
+        self.run_left = [self.sheet.get_image(73,31,16,14),
+                        self.sheet.get_image(91,31,16,14),
+                        self.sheet.get_image(109,31,16,14),]
+
+    def update(self):
+        if self.state == "alive":
+            self.alive()
+        elif self.state == "death":
+            self.death()
+
+    def alive(self):
+        # Move the character down, to make it fall. Cap the falling speed at the maximum defined
+        if(self.change_y <= self.max_fall_speed):
+            self.change_y += .2
+        else:
+            self.change_y = self.max_fall_speed
+
+        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False)
+        for hit in hits:
+            try:
+                hit.takedamage(1)
+            except AttributeError:
+                pass
+
+        self.collision_detection()

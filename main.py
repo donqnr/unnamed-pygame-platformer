@@ -56,7 +56,6 @@ clock = pygame.time.Clock()
 # Main loop
 while running:
 
-
     # Set the game to run at 60 FPS
     clock.tick(constants.FRAMERATE)
 
@@ -88,22 +87,14 @@ while running:
     # Draw the background of the current level
     screen.blit(current_level.background, (0,0))
 
-    # Draw the walls and the platforms from the current level, which are drawn in relation to the position of the camera
-    """ for wall in current_level.wall_list:
-        screen.blit(wall.surf,(wall.rect.x + cam.x, wall.rect.y + cam.y))
-    
-    for plat in current_level.platform_list:
-        screen.blit(plat.surf,(plat.rect.x + cam.x, plat.rect.y + cam.y)) """
-
     # Draw active sprites, in relation to the camera's position. Update when not paused
     for thing in vars.active_sprites:
-        if not vars.paused and is_onscreen(thing):
-            thing.update()
+        if is_onscreen(thing):
             screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
-    """ # Update the active sprites, unless the game is paused
+    # Update the active sprites, unless the game is paused
     if not vars.paused:
-        vars.active_sprites.update() """
+        vars.active_sprites.update()
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
     if player.rect.right + cam.get_screen_center_x() > 5:

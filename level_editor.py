@@ -1,11 +1,9 @@
 import pygame
 import json
-import sys
 
 import vars
 import constants
 import levels
-import platforms
 import cam
 import player
 import things
@@ -106,13 +104,17 @@ blocklist = [things.Tan_Tile_01,
             things.Ground_Tile_04,
             things.Ground_Tile_05,
             things.Ground_Tile_06,
-            things.TestEnemy,]
+            things.Enemy_01,]
+
+enemylist = [things.TestEnemy,]
 
 # Position of the cursor on the screen
 pos = (0,0)
 
 # Which tile from the list is selected and gets placed
 selected_block = 0
+# Which enemy from the list is selected and gets placed
+selected_enemy = 0
 # Initialize the sprite which follows the cursor
 cursorpos = CursorPosition()
 

@@ -54,8 +54,8 @@ class Player(pygame.sprite.Sprite):
         # Get the currently loaded level, used for collision detection
         self.level = None
         # Variables for movement
-        self.change_x = 0.0
-        self.change_y = 0.0
+        self.change_x = 0
+        self.change_y = 0
         # Initialize class that's used to check if the player is on ground
         self.groundcheck = GroundCheck(self.rect.width)
         self.muzzleflash = MuzzleFlash(self)
@@ -64,6 +64,8 @@ class Player(pygame.sprite.Sprite):
         self.hp = 10
         self.maxhp = 10
         self.state = "normal"
+        self.invul_time = 0
+        vars.player_sprites.add(self)
         
     # Update the player character
     def update(self):
@@ -77,19 +79,23 @@ class Player(pygame.sprite.Sprite):
         if self.state == "normal":
             # Call the move function, pass the keypresses to it
             self.move(pressed_keys)
-
-        self.collision_detection(pressed_keys)
+        if self.state == "death":
+            self.death()
 
         # Move the character down, to make it fall. Cap the falling speed at the maximum defined
         if(self.change_y <= self.max_fall_speed):
             self.change_y += 0.2
         else:
             self.change_y = self.max_fall_speed
-        print(str(self.change_y))
+
+        self.collision_detection(pressed_keys)
+
+        if self.invul_time > 0:
+            self.invul_time -= 1
+
 
     # Movement function
     def move(self, pressed_keys):
-
          # Check if movement keys are held down, if so, change the character's direction and move them in that direction
         if pressed_keys[K_LEFT]:
             self.change_x = -2
@@ -179,10 +185,10 @@ class Player(pygame.sprite.Sprite):
     # Function for firing the gun
     def shoot(self):
         if self.direction == 'l':
-            shotx = self.rect.left - 6
+            shotx = self.rect.left
             shotspeed = -6
         else:
-            shotx = self.rect.right
+            shotx = self.rect.right - 6
             shotspeed = 6
         proj = projectiles.Projectile(shotx,self.rect.centery,shotspeed,0)
         proj.level = self.level
@@ -205,6 +211,20 @@ class Player(pygame.sprite.Sprite):
             return True
 
         return False
+    def death(self):
+        pygame.sprite.Sprite.kill(self)
+
+    def takedamage(self, dmg):
+        if not self.invul_time > 0:
+            self.hp -= 1
+            self.invul_time = 60
+            print(str(self.hp))
+        if self.hp <= 0:
+            self.state = "death"
+
+    def push_player(self, x, y):
+        pass
+
         
         
 # Class to help check if the player character is on ground

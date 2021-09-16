@@ -82,3 +82,10 @@ class TestEnemy(enemies.Enemy):
         enemies.Enemy.__init__(self,pos_x,pos_y)
         self.name = "TestEnemy"
         self.type = "enemy"
+
+class Enemy_01(enemies.Enemy_01):
+    def __init__(self, pos_x, pos_y):
+        super(enemies.Enemy, self).__init__()
+        enemies.Enemy_01.__init__(self,pos_x,pos_y)
+        self.name = "Enemy_01"
+        self.type = "enemy"
