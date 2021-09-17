@@ -20,6 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         self.level = None
         self.hp = 4
         self.state = "alive"
+        self.target = None
 
     def update(self):
         if self.state == "alive":
@@ -72,6 +73,8 @@ class Enemy(pygame.sprite.Sprite):
                 if self.rect.bottom - self.change_y < plat.rect.bottom:
                    self.rect.bottom = plat.rect.top
                    self.change_y = 0
+
+
                    
 class Enemy_01(Enemy):
     def __init__(self, pos_x, pos_y):
@@ -93,13 +96,16 @@ class Enemy_01(Enemy):
             self.alive()
         elif self.state == "death":
             self.death()
+        elif self.state == "chase":
+            self.chase()
 
     def alive(self):
-        # Move the character down, to make it fall. Cap the falling speed at the maximum defined
-        if(self.change_y <= self.max_fall_speed):
-            self.change_y += .2
-        else:
-            self.change_y = self.max_fall_speed
+        self.fall()
+
+        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False, pygame.sprite.collide_circle_ratio(3.0))
+        for hit in hits:
+            self.state = "chase"
+            self.target = hit
 
         hits = pygame.sprite.spritecollide(self, vars.player_sprites, False)
         for hit in hits:
@@ -107,5 +113,30 @@ class Enemy_01(Enemy):
                 hit.takedamage(1)
             except AttributeError:
                 pass
+
+
+        self.collision_detection()
+
+    def fall(self):
+        # Move the character down, to make it fall. Cap the falling speed at the maximum defined
+        if(self.change_y <= self.max_fall_speed):
+            self.change_y += .2
+        else:
+            self.change_y = self.max_fall_speed
+    
+    def move_anim(self):
+        pass
+    def chase(self):
+
+        if self.target != None:
+            if self.target.rect.centerx < self.rect.centerx:
+                self.change_x = -1
+            elif self.target.rect.centerx > self.rect.centerx:
+                self.change_x = 1
+            else:
+                self.change_x = 0
+
+
+        self.rect.x += self.change_x
 
         self.collision_detection()

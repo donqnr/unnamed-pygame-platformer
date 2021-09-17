@@ -53,13 +53,13 @@ class Projectile(pygame.sprite.Sprite):
             self.state = "predeath"
         
         hits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
-        for hit in hits:
+        if hits:
             self.state = "predeath"
 
         hits = pygame.sprite.spritecollide(self, vars.enemy_sprites, False)
-        for hit in hits:
+        if hits:
             try:
-                hit.takedamage(self.damage)
+                hits[0].takedamage(self.damage)
             except AttributeError:
                 pass
             self.state = "predeath"

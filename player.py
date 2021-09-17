@@ -222,7 +222,7 @@ class Player(pygame.sprite.Sprite):
         if self.hp <= 0:
             self.state = "death"
 
-    def push_player(self, x, y):
+    def push(self, x, y):
         pass
 
         
