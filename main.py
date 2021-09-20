@@ -82,7 +82,7 @@ while running:
 
         # Did the user click the window close button? If so, stop the loop.
         elif event.type == QUIT:
-            running = False
+            running = False 
 
     # Draw the background of the current level
     screen.blit(current_level.background, (0,0))

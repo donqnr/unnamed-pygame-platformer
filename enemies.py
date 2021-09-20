@@ -1,6 +1,7 @@
 import pygame
 import spritesheet
 import vars
+import math
 
 # A lot of code copied from the player class, could refactor these and have them be a child of a more general character class
 
@@ -15,12 +16,14 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y = pos_y
         self.change_y = 0
         self.change_x = 0
+        self.max_speed = 2
         self.max_fall_speed = 5
         vars.enemy_sprites.add(self)
         self.level = None
-        self.hp = 4
+        self.hp = 2
         self.state = "alive"
         self.target = None
+        self.run_duration = 0
 
     def update(self):
         if self.state == "alive":
@@ -81,13 +84,16 @@ class Enemy_01(Enemy):
         super(Enemy, self).__init__()
         pygame.sprite.Sprite.__init__(self)
         Enemy.__init__(self,pos_x,pos_y)
+        self.max_speed = 2.2
+        self.asd = 0
         self.direction = 'l'
+        self.run_duration = 0
 
         self.run_left = [self.sheet.get_image(19,31,16,14),
                         self.sheet.get_image(37,31,16,14),
                         self.sheet.get_image(55,31,16,14),]
 
-        self.run_left = [self.sheet.get_image(73,31,16,14),
+        self.run_right = [self.sheet.get_image(73,31,16,14),
                         self.sheet.get_image(91,31,16,14),
                         self.sheet.get_image(109,31,16,14),]
 
@@ -99,13 +105,9 @@ class Enemy_01(Enemy):
         elif self.state == "chase":
             self.chase()
 
-    def alive(self):
         self.fall()
-
-        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False, pygame.sprite.collide_circle_ratio(3.0))
-        for hit in hits:
-            self.state = "chase"
-            self.target = hit
+        self.collision_detection()
+        self.deal_damage()
 
         hits = pygame.sprite.spritecollide(self, vars.player_sprites, False)
         for hit in hits:
@@ -115,7 +117,12 @@ class Enemy_01(Enemy):
                 pass
 
 
-        self.collision_detection()
+    def alive(self):
+
+        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False, pygame.sprite.collide_circle_ratio(7))
+        for hit in hits:
+            self.state = "chase"
+            self.target = hit
 
     def fall(self):
         # Move the character down, to make it fall. Cap the falling speed at the maximum defined
@@ -125,18 +132,51 @@ class Enemy_01(Enemy):
             self.change_y = self.max_fall_speed
     
     def move_anim(self):
-        pass
-    def chase(self):
 
+        if math.ceil(self.run_duration) // 7 >= len(self.run_right):
+            # Once it reaches the last sprite, reset the counter
+            self.run_duration = 0
+
+        # If character is facing right, use the right facing sprites. Otherwise use left.
+        if self.change_x >= 0.15:
+            self.surf = self.run_right[math.ceil(self.run_duration) // 7]
+        elif self.change_x <= -0.15:
+            self.surf = self.run_left[math.ceil(self.run_duration) // 7]
+        else:
+            self.surf = self.sheet.get_image(1,31,16,13)
+        # Increase the counter by one
+        if self.change_x < 0:
+            self.run_duration -= self.change_x
+        else:
+            self.run_duration += self.change_x
+
+    def chase(self):
         if self.target != None:
             if self.target.rect.centerx < self.rect.centerx:
-                self.change_x = -1
+                self.direction = 'l'
+                if self.change_x > self.max_speed - (self.max_speed * 2):
+                    self.change_x += -0.1
+                else:
+                    self.change_x = -self.max_speed
             elif self.target.rect.centerx > self.rect.centerx:
-                self.change_x = 1
-            else:
-                self.change_x = 0
+                self.direction = 'r'
+                if self.change_x < self.max_speed:
+                    self.change_x += 0.1
+                else:
+                    self.change_x = self.max_speed
 
+        self.asd += self.change_x - math.floor(self.change_x)
+        if self.asd >= 1.0:
+            self.rect.x += 1
+            self.asd -= 1.0
 
-        self.rect.x += self.change_x
+        self.rect.x += math.floor(self.change_x)
+        self.move_anim()
 
-        self.collision_detection()
+    def deal_damage(self):
+        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False)
+        for hit in hits:
+            try:
+                hit.takedamage(1)
+            except AttributeError:
+                pass

@@ -2,6 +2,7 @@ import pygame
 import spritesheet
 import vars
 import projectiles
+import math
 import constants
 
 from pygame.locals import (
@@ -161,7 +162,7 @@ class Player(pygame.sprite.Sprite):
             if self.change_x < 0:
                 self.rect.left = wall.rect.right
 
-        self.rect.y += self.change_y
+        self.rect.y += math.floor(self.change_y)
 
         # Check for collision vertically, prevent the character from falling or jumping through walls
         wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)

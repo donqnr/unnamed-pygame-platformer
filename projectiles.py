@@ -14,7 +14,7 @@ class Projectile(pygame.sprite.Sprite):
         self.speed_x = speed_x
         self.speed_y = speed_y
         self.damage = 1
-        self.lifespan = 4 * 60
+        self.lifespan = 45
         self.lifetime = 0
         self.state = "spawn"
         vars.active_sprites.add(self)
