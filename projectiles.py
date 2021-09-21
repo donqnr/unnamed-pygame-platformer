@@ -18,6 +18,7 @@ class Projectile(pygame.sprite.Sprite):
         self.lifetime = 0
         self.state = "spawn"
         vars.active_sprites.add(self)
+        vars.visible_sprites.add(self)
         self.level = None
         self.deathanimtime = 0
         self.deathanim = [self.sheet.get_image(1, 10, 12, 12),

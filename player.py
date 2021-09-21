@@ -4,6 +4,7 @@ import vars
 import projectiles
 import math
 import constants
+import fx
 
 from pygame.locals import (
     KEYDOWN,
@@ -66,7 +67,9 @@ class Player(pygame.sprite.Sprite):
         self.maxhp = 10
         self.state = "normal"
         self.invul_time = 0
+        self.respawn_time = 120
         vars.player_sprites.add(self)
+        vars.visible_sprites.add(self)
         
     # Update the player character
     def update(self):
@@ -91,8 +94,13 @@ class Player(pygame.sprite.Sprite):
 
         self.collision_detection(pressed_keys)
 
-        if self.invul_time > 0:
+        if self.invul_time > 0 and not self.is_dead():
             self.invul_time -= 1
+            if (self.invul_time % 2) == 0:
+                vars.visible_sprites.add(self)
+            else:
+                vars.visible_sprites.remove(self)
+
 
 
     # Movement function
@@ -185,20 +193,21 @@ class Player(pygame.sprite.Sprite):
 
     # Function for firing the gun
     def shoot(self):
-        if self.direction == 'l':
-            shotx = self.rect.left
-            shotspeed = -6
-        else:
-            shotx = self.rect.right - 6
-            shotspeed = 6
-        proj = projectiles.Projectile(shotx,self.rect.centery,shotspeed,0)
-        proj.level = self.level
-        self.muzzleflash.flash(2)
+        if not self.is_dead():
+            if self.direction == 'l':
+                shotx = self.rect.left
+                shotspeed = -6
+            else:
+                shotx = self.rect.right - 6
+                shotspeed = 6
+            proj = projectiles.Projectile(shotx,self.rect.centery,shotspeed,0)
+            proj.level = self.level
+            self.muzzleflash.flash(2)
             
     # Jumping function
     def jump(self):
         # Check if the player character is on ground before allowing them to jump
-        if self.is_grounded():
+        if self.is_grounded() and not self.is_dead():
             self.change_y = -4
 
     # Function for checking if player is on ground
@@ -212,11 +221,25 @@ class Player(pygame.sprite.Sprite):
             return True
 
         return False
+
     def death(self):
-        pygame.sprite.Sprite.kill(self)
+        vars.visible_sprites.remove(self)
+        vars.player_sprites.remove(self)
+        self.respawn_time -= 1
+        """ deathfx = fx.PlayerDeath(self.rect.centerx, self.rect.centery)
+        vars.visible_sprites.add(deathfx)
+        vars.active_sprites.add(deathfx) """
+        if self.respawn_time <= 0:
+            self.respawn()
+
+    def is_dead(self):
+        if self.hp < 1:
+            return True
+
+        return False
 
     def takedamage(self, dmg):
-        if not self.invul_time > 0:
+        if not self.invul_time > 0 and self.hp > 0:
             self.hp -= 1
             self.invul_time = 60
             print(str(self.hp))
@@ -225,6 +248,14 @@ class Player(pygame.sprite.Sprite):
 
     def push(self, x, y):
         pass
+
+    def respawn(self):
+        self.state = "normal"
+        self.rect.topleft = self.level.player_start
+        vars.visible_sprites.add(self)
+        vars.player_sprites.add(self)
+        self.hp = self.maxhp
+        self.respawn_time = 120
 
         
         
@@ -253,6 +284,7 @@ class MuzzleFlash(pygame.sprite.Sprite):
         self.owner = owner
     def flash(self, dur):
         self.setpos()
+        vars.visible_sprites.add(self)
         vars.active_sprites.add(self)
         self.duration = dur
         self.counter = 0

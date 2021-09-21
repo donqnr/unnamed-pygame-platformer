@@ -20,6 +20,8 @@ def is_onscreen(thing):
 
     return False
 
+
+
 # Initialize pygame
 pygame.init()
 
@@ -88,7 +90,7 @@ while running:
     screen.blit(current_level.background, (0,0))
 
     # Draw active sprites, in relation to the camera's position. Update when not paused
-    for thing in vars.active_sprites:
+    for thing in vars.visible_sprites:
         if is_onscreen(thing):
             screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 

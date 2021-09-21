@@ -9,7 +9,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super(Enemy, self).__init__()
         pygame.sprite.Sprite.__init__(self)
-        self.sheet = spritesheet.SpriteSheet("assets/sprites/enemies2.png", 1)
+        self.sheet = spritesheet.SpriteSheet("assets/sprites/enemies.png", 1)
         self.surf = self.sheet.get_image(1,31,16,13)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
@@ -19,14 +19,15 @@ class Enemy(pygame.sprite.Sprite):
         self.max_speed = 2
         self.max_fall_speed = 5
         vars.enemy_sprites.add(self)
+        vars.visible_sprites.add(self)
         self.level = None
         self.hp = 2
-        self.state = "alive"
+        self.state = "normal"
         self.target = None
         self.run_duration = 0
 
     def update(self):
-        if self.state == "alive":
+        if self.state == "normal":
             self.alive()
         elif self.state == "death":
             self.death()
@@ -98,8 +99,8 @@ class Enemy_01(Enemy):
                         self.sheet.get_image(109,31,16,14),]
 
     def update(self):
-        if self.state == "alive":
-            self.alive()
+        if self.state == "normal":
+            self.wait()
         elif self.state == "death":
             self.death()
         elif self.state == "chase":
@@ -117,8 +118,8 @@ class Enemy_01(Enemy):
                 pass
 
 
-    def alive(self):
-
+    def wait(self):
+        self.change_x = 0
         hits = pygame.sprite.spritecollide(self, vars.player_sprites, False, pygame.sprite.collide_circle_ratio(7))
         for hit in hits:
             self.state = "chase"
@@ -149,22 +150,8 @@ class Enemy_01(Enemy):
             self.run_duration -= self.change_x
         else:
             self.run_duration += self.change_x
-
-    def chase(self):
-        if self.target != None:
-            if self.target.rect.centerx < self.rect.centerx:
-                self.direction = 'l'
-                if self.change_x > self.max_speed - (self.max_speed * 2):
-                    self.change_x += -0.1
-                else:
-                    self.change_x = -self.max_speed
-            elif self.target.rect.centerx > self.rect.centerx:
-                self.direction = 'r'
-                if self.change_x < self.max_speed:
-                    self.change_x += 0.1
-                else:
-                    self.change_x = self.max_speed
-
+        
+    def move(self):
         self.asd += self.change_x - math.floor(self.change_x)
         if self.asd >= 1.0:
             self.rect.x += 1
@@ -172,6 +159,30 @@ class Enemy_01(Enemy):
 
         self.rect.x += math.floor(self.change_x)
         self.move_anim()
+
+    def chase(self):
+        if self.target != None:
+            if self.target.rect.centerx < self.rect.centerx:
+                self.direction = 'l'
+                if self.change_x > self.max_speed - (self.max_speed * 2):
+                    self.change_x += -0.15
+                else:
+                    self.change_x = -self.max_speed
+            elif self.target.rect.centerx > self.rect.centerx:
+                self.direction = 'r'
+                if self.change_x < self.max_speed:
+                    self.change_x += 0.15
+                else:
+                    self.change_x = self.max_speed
+
+        self.move()
+        try:
+            if self.target.is_dead():
+                self.target = None
+                self.surf = self.sheet.get_image(1,31,16,13)
+                self.state = "normal"
+        except AttributeError:
+            pass
 
     def deal_damage(self):
         hits = pygame.sprite.spritecollide(self, vars.player_sprites, False)
