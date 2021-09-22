@@ -60,6 +60,8 @@ def load_level():
                 current_level.wall_list.add(thing)
             elif thing.type == "enemy":
                 current_level.enemy_list.add(thing)
+            elif thing.type == "platform":
+                current_level.platform_list.add(thing)
             thing_list.add(thing)
             
         vars.active_sprites.add(current_level.wall_list) 
@@ -98,6 +100,8 @@ cam = cam.Cam()
 
 # List of all the tiles that can be placed
 blocklist = [things.Tan_Tile_01,
+            things.Tan_Tile_02,
+            things.Tan_Tile_03,
             things.Ground_Tile_01,
             things.Ground_Tile_02,
             things.Ground_Tile_03,
@@ -189,10 +193,9 @@ while running:
 
 
     if pygame.mouse.get_pressed()[0] == 1:
-        #print(str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8))
         tile = blocklist[selected_block]((pos[0] - cam.x) // 8 * 8, (pos[1] - cam.y) // 8 * 8)
         hits = pygame.sprite.spritecollide(tile, vars.active_sprites, False)
-        if len(hits) <= 0:
+        if len(hits) == 0:
             vars.active_sprites.add(tile)
             print("Thing placed at " + str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8))
             thing_list.add(tile)
@@ -201,7 +204,6 @@ while running:
 
 
     if pygame.mouse.get_pressed()[2] == 1:
-        #print(str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8))
         hits = pygame.sprite.spritecollide(cursorpos, vars.active_sprites, False)
         for hit in hits:
             pygame.sprite.Sprite.kill(hit)

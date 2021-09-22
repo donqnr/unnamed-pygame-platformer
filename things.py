@@ -3,8 +3,7 @@ import platforms
 import enemies
 
 
-""" Classes for everything placed in a level
-Platforms, enemies, pickups and such """
+""" Classes to be placed in a level with the level editor """
 
 class Tan_Tile_01(platforms.Wall):
     def __init__(self, pos_x, pos_y):
@@ -14,6 +13,26 @@ class Tan_Tile_01(platforms.Wall):
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
         self.name = "Tan_Tile_01"
+        self.type = "wall"
+
+class Tan_Tile_02(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(8, 24 ,8 ,8)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Tan_Tile_02"
+        self.type = "wall"
+
+class Tan_Tile_03(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(16, 24 ,8 ,8)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Tan_Tile_03"
         self.type = "wall"
 
 class Ground_Tile_01(platforms.Wall):

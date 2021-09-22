@@ -63,8 +63,8 @@ class Player(pygame.sprite.Sprite):
         self.muzzleflash = MuzzleFlash(self)
         self.muzzleflash.rect.x = self.rect.centerx
         self.muzzleflash.rect.y = self.rect.centery
-        self.hp = 10
-        self.maxhp = 10
+        self.hp = 8
+        self.maxhp = 8
         self.state = "normal"
         self.invul_time = 0
         self.respawn_time = 120
@@ -85,6 +85,8 @@ class Player(pygame.sprite.Sprite):
             self.move(pressed_keys)
         if self.state == "death":
             self.death()
+        if self.state == "deathloop":
+            self.deathloop()
 
         # Move the character down, to make it fall. Cap the falling speed at the maximum defined
         if(self.change_y <= self.max_fall_speed):
@@ -225,10 +227,14 @@ class Player(pygame.sprite.Sprite):
     def death(self):
         vars.visible_sprites.remove(self)
         vars.player_sprites.remove(self)
-        self.respawn_time -= 1
-        """ deathfx = fx.PlayerDeath(self.rect.centerx, self.rect.centery)
+
+        deathfx = fx.PlayerDeath(self.rect.centerx, self.rect.centery)
         vars.visible_sprites.add(deathfx)
-        vars.active_sprites.add(deathfx) """
+        vars.active_sprites.add(deathfx)
+        self.state = "deathloop"
+
+    def deathloop(self):
+        self.respawn_time -= 1
         if self.respawn_time <= 0:
             self.respawn()
 
