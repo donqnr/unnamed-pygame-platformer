@@ -31,7 +31,7 @@ flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
 # Set the level to load
-current_level = levels.Customlevel()
+current_level = levels.TestLevel()
 
 
 # Initialize the player class and pass the current level to it, for collision detection

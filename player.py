@@ -68,6 +68,8 @@ class Player(pygame.sprite.Sprite):
         self.state = "normal"
         self.invul_time = 0
         self.respawn_time = 120
+        self.asd = 0.0
+        self.speed = 1.75
         vars.player_sprites.add(self)
         vars.visible_sprites.add(self)
         
@@ -109,7 +111,7 @@ class Player(pygame.sprite.Sprite):
     def move(self, pressed_keys):
          # Check if movement keys are held down, if so, change the character's direction and move them in that direction
         if pressed_keys[K_LEFT]:
-            self.change_x = -2
+            self.change_x = -self.speed
             self.direction = 'l'
 
             # Check if character is on ground. If they are, play the running animation. Otherwise switch to the jumping frame
@@ -120,7 +122,7 @@ class Player(pygame.sprite.Sprite):
 
         # Same as above, but when moving right
         elif pressed_keys[K_RIGHT]:
-            self.change_x = 2
+            self.change_x = self.speed
             self.direction = 'r'
             if self.is_grounded():
                 self.run_anim()
@@ -144,6 +146,12 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.surf = self.spritesheet.get_image(46,34, 16, 17)
         # Makes the player character move
+
+        self.asd += self.change_x - math.floor(self.change_x)
+        if self.asd >= 1.0:
+            self.rect.x += 1
+            self.asd -= 1.0
+        
         self.rect.x += self.change_x
 
     # Run animation function

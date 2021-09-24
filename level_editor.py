@@ -119,6 +119,10 @@ pos = (0,0)
 selected_block = 0
 # Which enemy from the list is selected and gets placed
 selected_enemy = 0
+# List of layers to place things in
+thing_types = ['wall', 'platform', 'bg', 'fg', 'enemy']
+# Variable for determining which layer to place a tile (background, foreground, walls) or if it's an enemy or a pickup
+selected_thing_type = "platform"
 # Initialize the sprite which follows the cursor
 cursorpos = CursorPosition()
 
@@ -176,6 +180,7 @@ while running:
 
     # A preview for the currently selected block
     blockpreview = blocklist[selected_block]((pos[0] - cam.x), (pos[1] - cam.y))
+    blockpreview.surf.set_alpha(150)
 
     # Blit all the active sprites
     for thing in vars.active_sprites:
@@ -198,6 +203,8 @@ while running:
         if len(hits) == 0:
             vars.active_sprites.add(tile)
             print("Thing placed at " + str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8))
+            if tile.type == "wall":
+                tile.type = selected_thing_type 
             thing_list.add(tile)
         else:
             pygame.sprite.Sprite.kill(tile)

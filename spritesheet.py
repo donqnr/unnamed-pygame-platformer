@@ -14,7 +14,7 @@ class SpriteSheet():
 
     def get_image(self, x, y, width, height):
 
-        image = pygame.Surface((width * self.scale, height * self.scale)).convert_alpha()
+        image = pygame.Surface((width * self.scale, height * self.scale)).convert()
 
         image.blit(self.sheet, (0, 0), (x * self.scale, y * self.scale, width * self.scale, height * self.scale))
 
