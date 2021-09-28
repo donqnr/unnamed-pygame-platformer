@@ -16,6 +16,7 @@ class Level():
         self.platform_list = pygame.sprite.Group()
         self.wall_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
+        self.bg_list = pygame.sprite.Group()
         self.player_start = (0,0)
         # Set the background image for the level
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
@@ -25,12 +26,15 @@ class Level():
             data = json.load(file)
             for block, pos, thingtype in data:
                 thing = getattr(things, block)(pos[0],pos[1])
+                thing.type = thingtype
                 if thing.type == "wall":
                     self.wall_list.add(thing)
                 elif thing.type == "enemy":
                     self.enemy_list.add(thing)
                 elif thing.type == "platform":
                     self.platform_list.add(thing)
+                elif thing.type == "bg":
+                    self.bg_list.add(thing)
 
 class TestLevel(Level):
     def __init__(self):

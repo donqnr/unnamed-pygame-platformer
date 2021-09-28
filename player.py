@@ -3,7 +3,6 @@ import spritesheet
 import vars
 import projectiles
 import math
-import constants
 import fx
 
 from pygame.locals import (
@@ -46,30 +45,51 @@ class Player(pygame.sprite.Sprite):
 
         # Initialize the image used for the player's sprite
         self.surf = self.spritesheet.get_image(10,8, 16, 17)
+
         # Initialize rect, set the starting position
         self.rect = self.surf.get_rect()
         self.rect.inflate_ip(0, -1)
         self.rect.x = pos_x
         self.rect.y = pos_y
+
         # Set the maximum falling speed
         self.max_fall_speed = 4.0
+
         # Get the currently loaded level, used for collision detection
         self.level = None
+
         # Variables for movement
         self.change_x = 0
         self.change_y = 0
+
         # Initialize class that's used to check if the player is on ground
         self.groundcheck = GroundCheck(self.rect.width)
+
+        # Initialize class for showing the muzzleflash when firing
         self.muzzleflash = MuzzleFlash(self)
         self.muzzleflash.rect.x = self.rect.centerx
         self.muzzleflash.rect.y = self.rect.centery
+
+        # Player's health and the maximum amount 
         self.hp = 8
         self.maxhp = 8
+
+        # Player's state
         self.state = "normal"
+
+        # Invulnerability time, used to give a grace period after getting hit
         self.invul_time = 0
+
+        # How many frames to wait until the player respawns after dying
         self.respawn_time = 120
+
+        # Variable to help give a more precise control over the player's speed, dunno what name to give it
         self.asd = 0.0
+
+        # The player's movement speed
         self.speed = 1.75
+
+        # Add the player to the player and visible sprite groups
         vars.player_sprites.add(self)
         vars.visible_sprites.add(self)
         
@@ -147,12 +167,14 @@ class Player(pygame.sprite.Sprite):
                 self.surf = self.spritesheet.get_image(46,34, 16, 17)
         # Makes the player character move
 
+        """ gfsdhj """
         self.asd += self.change_x - math.floor(self.change_x)
         if self.asd >= 1.0:
             self.rect.x += 1
             self.asd -= 1.0
         
-        self.rect.x += self.change_x
+        self.rect.x += math.floor(self.change_x)
+        
 
     # Run animation function
     def run_anim(self):
@@ -180,6 +202,7 @@ class Player(pygame.sprite.Sprite):
             if self.change_x < 0:
                 self.rect.left = wall.rect.right
 
+        # Using the floor function here to prevent weirdness when the player moves into negative coords
         self.rect.y += math.floor(self.change_y)
 
         # Check for collision vertically, prevent the character from falling or jumping through walls
@@ -296,12 +319,14 @@ class MuzzleFlash(pygame.sprite.Sprite):
         self.counter = 0
         self.duration = 0
         self.owner = owner
+
     def flash(self, dur):
         self.setpos()
         vars.visible_sprites.add(self)
         vars.active_sprites.add(self)
         self.duration = dur
         self.counter = 0
+
     def update(self):
         self.setpos()
         self.counter += 1

@@ -31,15 +31,14 @@ flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
 # Set the level to load
-current_level = levels.TestLevel()
-
+current_level = levels.Customlevel()
 
 # Initialize the player class and pass the current level to it, for collision detection
 player = player.Player(current_level.player_start[0],current_level.player_start[1] )
 player.level = current_level
 
-vars.active_sprites.add(current_level.wall_list) 
-vars.active_sprites.add(current_level.platform_list)
+""" vars.active_sprites.add(current_level.wall_list) 
+vars.active_sprites.add(current_level.platform_list) """
 vars.active_sprites.add(player)
 vars.active_sprites.add(current_level.enemy_list)
 
@@ -90,6 +89,7 @@ while running:
     screen.blit(current_level.background, (0,0))
 
     # Draw active sprites, in relation to the camera's position. Update when not paused
+
     for thing in vars.visible_sprites:
         if is_onscreen(thing):
             screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))

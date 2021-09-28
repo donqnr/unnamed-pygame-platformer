@@ -18,11 +18,16 @@ from pygame.locals import (
     K_UP,
     KEYDOWN,
     QUIT,
+    K_F1,
+    K_F2,
+    K_F3,
+    K_F4,
+    K_F5,
     K_F6,
     K_F7,
 )
 
-""" A rudimentary level editor """
+""" A very rudimentary level editor """
 
 # Set the level to load
 current_level = levels.BlankLevel()
@@ -56,19 +61,32 @@ def load_level():
         thing_list.empty()
         for block, pos, thingtype in data:
             thing = getattr(things, block)(pos[0],pos[1])
-            if thing.type == "wall":
+            thing.type = thingtype
+            if thing.type == "bg":
+                current_level.bg_list.add(thing)
+            elif thing.type == "wall":
                 current_level.wall_list.add(thing)
-            elif thing.type == "enemy":
-                current_level.enemy_list.add(thing)
             elif thing.type == "platform":
                 current_level.platform_list.add(thing)
+            elif thing.type == "enemy":
+                current_level.enemy_list.add(thing)
             thing_list.add(thing)
             
+        vars.active_sprites.add(current_level.bg_list)
         vars.active_sprites.add(current_level.wall_list) 
         vars.active_sprites.add(current_level.platform_list)
         vars.active_sprites.add(player)
         vars.active_sprites.add(current_level.enemy_list)
         
+def add_to_list(tile):
+    if tile.type == "bg":
+        current_level.bg_list.add(tile)
+    elif tile.type == "wall":
+        current_level.wall_list.add(tile)
+    elif tile.type == "platform":
+        current_level.platform_list.add(tile)
+    elif tile.type == "enemy":
+        current_level.enemy_list.add(tile)
 
 # Initialize pygame
 pygame.init()
@@ -85,6 +103,7 @@ screen = pygame.display.set_mode((constants.EDITOR_SCREEN_WIDTH, constants.EDITO
 player = player.Player(current_level.player_start[0],current_level.player_start[1])
 
 # Add the level sprites and the player to the active sprites list
+vars.active_sprites.add(current_level.bg_list) 
 vars.active_sprites.add(current_level.wall_list) 
 vars.active_sprites.add(current_level.platform_list)
 vars.active_sprites.add(player)
@@ -102,6 +121,23 @@ cam = cam.Cam()
 blocklist = [things.Tan_Tile_01,
             things.Tan_Tile_02,
             things.Tan_Tile_03,
+            things.Tan_Tile_04,
+            things.Tan_Pipe_01,
+            things.Tan_Pipe_02,
+            things.Tan_Pipe_03,
+            things.Tan_Pipe_04,
+            things.Tan_Pipe_05,
+            things.Tan_Pipe_06,
+            things.Tan_Pipe_07,
+            things.Tan_Panel_TL,
+            things.Tan_Panel_T,
+            things.Tan_Panel_TR,
+            things.Tan_Panel_L,
+            things.Tan_Panel_M,
+            things.Tan_Panel_R,
+            things.Tan_Panel_BL,
+            things.Tan_Panel_B,
+            things.Tan_Panel_BR,
             things.Ground_Tile_01,
             things.Ground_Tile_02,
             things.Ground_Tile_03,
@@ -119,10 +155,14 @@ pos = (0,0)
 selected_block = 0
 # Which enemy from the list is selected and gets placed
 selected_enemy = 0
+
+blockpreview = blocklist[selected_block]((pos[0] - cam.x), (pos[1] - cam.y))
+blockpreview.surf.set_alpha(150)
+
 # List of layers to place things in
 thing_types = ['wall', 'platform', 'bg', 'fg', 'enemy']
 # Variable for determining which layer to place a tile (background, foreground, walls) or if it's an enemy or a pickup
-selected_thing_type = "platform"
+selected_thing_type = "wall"
 # Initialize the sprite which follows the cursor
 cursorpos = CursorPosition()
 
@@ -153,6 +193,22 @@ while running:
                 selected_block -= 1
                 if selected_block < 0:
                     selected_block = len(blocklist) - 1
+            # Set the tile to be placed as a wall
+            if event.key == K_F1:
+                selected_thing_type = "wall"
+                print("Wall")
+            # Set the tile to be placed as a platform
+            if event.key == K_F2:
+                selected_thing_type = "platform"
+                print("Platform")
+            # Set the tile to be placed in the background
+            if event.key == K_F3:
+                selected_thing_type = "bg"
+                print("Background")
+            # Set the tile to be placed in the foreground
+            if event.key == K_F4:
+                selected_thing_type = "fg"
+                print("Foreground")
             # Save the current level into a file                    
             if event.key == K_F6:
                 save_level(thing_list)
@@ -180,12 +236,25 @@ while running:
 
     # A preview for the currently selected block
     blockpreview = blocklist[selected_block]((pos[0] - cam.x), (pos[1] - cam.y))
-    blockpreview.surf.set_alpha(150)
 
     # Blit all the active sprites
-    for thing in vars.active_sprites:
+    """ for thing in vars.active_sprites:
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y)) """
+
+
+    for thing in current_level.bg_list:
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+
+    for thing in current_level.wall_list:
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+
+    for thing in current_level.platform_list:
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+
+    for thing in current_level.enemy_list:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
         
+    screen.blit(player.surf,(player.rect.x + cam.x, player.rect.y + cam.y))
     # Blit the preview for the selected block on the cursor
     screen.blit(blockpreview.surf,(blockpreview.rect.x + cam.x, blockpreview.rect.y + cam.y))
 
@@ -199,13 +268,17 @@ while running:
 
     if pygame.mouse.get_pressed()[0] == 1:
         tile = blocklist[selected_block]((pos[0] - cam.x) // 8 * 8, (pos[1] - cam.y) // 8 * 8)
-        hits = pygame.sprite.spritecollide(tile, vars.active_sprites, False)
+        if selected_thing_type == "wall" or "platform":
+            hits = pygame.sprite.spritecollide(tile, current_level.wall_list, False)
+            hits.extend(pygame.sprite.spritecollide(tile, current_level.platform_list, False))
+        elif selected_thing_type == "bg":
+            hits = pygame.sprite.spritecollide(tile, current_level.bg_list, False)
         if len(hits) == 0:
             vars.active_sprites.add(tile)
-            print("Thing placed at " + str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8))
+            print(tile.name + " placed at " + str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8) + " as " + selected_thing_type)
             if tile.type == "wall":
                 tile.type = selected_thing_type 
-            thing_list.add(tile)
+            add_to_list(tile)
         else:
             pygame.sprite.Sprite.kill(tile)
 
@@ -218,5 +291,4 @@ while running:
 
 
     pygame.display.update()
-
 
