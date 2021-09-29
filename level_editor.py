@@ -143,10 +143,9 @@ blocklist = [things.Tan_Tile_01,
             things.Ground_Tile_03,
             things.Ground_Tile_04,
             things.Ground_Tile_05,
-            things.Ground_Tile_06,
-            things.Enemy_01,]
+            things.Ground_Tile_06,]
 
-enemylist = [things.TestEnemy,]
+enemylist = [things.Enemy_01,]
 
 # Position of the cursor on the screen
 pos = (0,0)
@@ -205,10 +204,10 @@ while running:
             if event.key == K_F3:
                 selected_thing_type = "bg"
                 print("Background")
-            # Set the tile to be placed in the foreground
+            # Set the tile to be placed to be an enemy
             if event.key == K_F4:
-                selected_thing_type = "fg"
-                print("Foreground")
+                selected_thing_type = "enemy"
+                print("Enemy")
             # Save the current level into a file                    
             if event.key == K_F6:
                 save_level(thing_list)
@@ -271,7 +270,7 @@ while running:
         if selected_thing_type == "wall" or "platform":
             hits = pygame.sprite.spritecollide(tile, current_level.wall_list, False)
             hits.extend(pygame.sprite.spritecollide(tile, current_level.platform_list, False))
-        elif selected_thing_type == "bg":
+        if selected_thing_type == "bg":
             hits = pygame.sprite.spritecollide(tile, current_level.bg_list, False)
         if len(hits) == 0:
             vars.active_sprites.add(tile)
@@ -279,6 +278,7 @@ while running:
             if tile.type == "wall":
                 tile.type = selected_thing_type 
             add_to_list(tile)
+            thing_list.add(tile)
         else:
             pygame.sprite.Sprite.kill(tile)
 
@@ -287,6 +287,7 @@ while running:
         hits = pygame.sprite.spritecollide(cursorpos, vars.active_sprites, False)
         for hit in hits:
             pygame.sprite.Sprite.kill(hit)
+            print("Removed " + hit.type + " " + hit.name)
     
 
 

@@ -88,8 +88,12 @@ while running:
     # Draw the background of the current level
     screen.blit(current_level.background, (0,0))
 
-    # Draw active sprites, in relation to the camera's position. Update when not paused
+    # Draw the background elements of the level, before any others
+    for thing in vars.bg_sprites:
+        if is_onscreen(thing):
+            screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
+    # Draw visible sprites, in relation to the camera's position.
     for thing in vars.visible_sprites:
         if is_onscreen(thing):
             screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))

@@ -87,7 +87,7 @@ class Player(pygame.sprite.Sprite):
         self.asd = 0.0
 
         # The player's movement speed
-        self.speed = 1.75
+        self.speed = 1.5
 
         # Add the player to the player and visible sprite groups
         vars.player_sprites.add(self)

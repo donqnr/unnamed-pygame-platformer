@@ -6,6 +6,7 @@ import constants
 import enemies
 import json
 import things
+import vars
 
 
 class Level():
@@ -27,14 +28,20 @@ class Level():
             for block, pos, thingtype in data:
                 thing = getattr(things, block)(pos[0],pos[1])
                 thing.type = thingtype
-                if thing.type == "wall":
+                if thing.type == "bg":
+                    self.bg_list.add(thing)
+                    vars.bg_sprites.add(thing)
+                elif thing.type == "wall":
                     self.wall_list.add(thing)
-                elif thing.type == "enemy":
-                    self.enemy_list.add(thing)
+                    vars.visible_sprites.add(thing)
                 elif thing.type == "platform":
                     self.platform_list.add(thing)
-                elif thing.type == "bg":
-                    self.bg_list.add(thing)
+                    vars.visible_sprites.add(thing)
+                elif thing.type == "enemy":
+                    self.enemy_list.add(thing)
+                    vars.visible_sprites.add(thing)
+
+
 
 class TestLevel(Level):
     def __init__(self):

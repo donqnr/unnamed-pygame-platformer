@@ -14,6 +14,5 @@ class Wall(pygame.sprite.Sprite):
         self.surf.fill((0, 255, 255))
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
-        vars.visible_sprites.add(self)
 
 
