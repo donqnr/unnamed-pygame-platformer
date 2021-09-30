@@ -85,7 +85,7 @@ class Enemy_01(Enemy):
         super(Enemy, self).__init__()
         pygame.sprite.Sprite.__init__(self)
         Enemy.__init__(self,pos_x,pos_y)
-        self.max_speed = 2.2
+        self.max_speed = 1.6
         self.asd = 0
         self.direction = 'l'
         self.run_duration = 0

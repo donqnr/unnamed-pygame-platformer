@@ -15,6 +15,16 @@ class Tan_Tile_01(platforms.Wall):
         self.name = "Tan_Tile_01"
         self.type = "wall"
 
+class Tan_Tile_01_B(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(184, 0 ,8 ,8)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Tan_Tile_01_B"
+        self.type = "wall"
+
 class Tan_Tile_02(platforms.Wall):
     def __init__(self, pos_x, pos_y):
         super(platforms.Wall, self).__init__()
@@ -23,6 +33,16 @@ class Tan_Tile_02(platforms.Wall):
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
         self.name = "Tan_Tile_02"
+        self.type = "wall"
+
+class Tan_Tile_02_B(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(192, 0 ,8 ,8)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Tan_Tile_02_B"
         self.type = "wall"
 
 class Tan_Tile_03(platforms.Wall):
@@ -35,6 +55,16 @@ class Tan_Tile_03(platforms.Wall):
         self.name = "Tan_Tile_03"
         self.type = "wall"
 
+class Tan_Tile_03_B(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(200, 0 ,8 ,8)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Tan_Tile_03_B"
+        self.type = "wall"
+
 class Tan_Tile_04(platforms.Wall):
     def __init__(self, pos_x, pos_y):
         super(platforms.Wall, self).__init__()
@@ -43,6 +73,16 @@ class Tan_Tile_04(platforms.Wall):
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
         self.name = "Tan_Tile_04"
+        self.type = "wall"
+
+class Tan_Tile_04_B(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(208, 0 ,8 ,8)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Tan_Tile_04_B"
         self.type = "wall"
 
 class Tan_Pipe_01(platforms.Wall):
@@ -205,6 +245,26 @@ class Tan_Panel_BR(platforms.Wall):
         self.name = "Tan_Panel_BR"
         self.type = "wall"
 
+class Pipe_Y_01(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(48, 40 ,16 ,16)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Pipe_Y_01"
+        self.type = "wall"
+
+class Pipe_Y_01_B(platforms.Wall):
+    def __init__(self, pos_x, pos_y):
+        super(platforms.Wall, self).__init__()
+        platforms.Wall.__init__(self, 8, 8, pos_x, pos_y)
+        self.surf = self.sheet.get_image(232, 16 ,16 ,16)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(pos_x,pos_y)
+        self.name = "Pipe_Y_01_B"
+        self.type = "wall"
+
 class Ground_Tile_01(platforms.Wall):
     def __init__(self, pos_x, pos_y):
         super(platforms.Wall, self).__init__()
@@ -264,13 +324,6 @@ class Ground_Tile_06(platforms.Wall):
         self.rect = self.surf.get_rect()
         self.rect.move_ip(pos_x,pos_y)
         self.type = "wall"
-
-class TestEnemy(enemies.Enemy):
-    def __init__(self, pos_x, pos_y):
-        super(enemies.Enemy, self).__init__()
-        enemies.Enemy.__init__(self,pos_x,pos_y)
-        self.name = "TestEnemy"
-        self.type = "enemy"
 
 class Enemy_01(enemies.Enemy_01):
     def __init__(self, pos_x, pos_y):

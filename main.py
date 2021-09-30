@@ -4,6 +4,7 @@ import player
 import constants
 import vars
 import cam
+import hud
 
 from pygame.locals import (
     K_ESCAPE,
@@ -36,6 +37,8 @@ current_level = levels.Customlevel()
 # Initialize the player class and pass the current level to it, for collision detection
 player = player.Player(current_level.player_start[0],current_level.player_start[1] )
 player.level = current_level
+
+hpmeter = hud.HealthMeter(player)
 
 """ vars.active_sprites.add(current_level.wall_list) 
 vars.active_sprites.add(current_level.platform_list) """
@@ -97,6 +100,9 @@ while running:
     for thing in vars.visible_sprites:
         if is_onscreen(thing):
             screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+
+    screen.blit(hpmeter.text, (hpmeter.rect.x,hpmeter.rect.y))
+    hpmeter.update()
 
     # Update the active sprites, unless the game is paused
     if not vars.paused:
