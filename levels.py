@@ -40,6 +40,11 @@ class Level():
                 elif thing.type == "enemy":
                     self.enemy_list.add(thing)
                     vars.visible_sprites.add(thing)
+    def destroy_level(self):
+        self.bg_list.empty()
+        self.wall_list.empty()
+        self.platform_list.empty()
+        self.enemy_list.empty()
 
 
 
@@ -80,9 +85,9 @@ class BlankLevel(Level):
         super(Level, self).__init__()
 
 class Customlevel(Level):
-    def __init__(self):
+    def __init__(self, level_file):
         Level.__init__(self)
         super(Level, self).__init__()
 
-        self.build_level("saved_level.json")
+        self.build_level(level_file)
 

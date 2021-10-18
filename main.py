@@ -9,6 +9,8 @@ import hud
 from pygame.locals import (
     K_ESCAPE,
     K_PAUSE,
+    K_F1,
+    K_F2,
     KEYDOWN,
     QUIT,
 )
@@ -21,7 +23,20 @@ def is_onscreen(thing):
 
     return False
 
+def changelevel(level_file):
+    vars.bg_sprites.empty()
+    vars.enemy_sprites.empty()
+    vars.visible_sprites.empty()
+    vars.active_sprites.empty()
+    newlevel = levels.Customlevel(level_file)
+    vars.active_sprites.add(newlevel.enemy_list)
+    for enemy in newlevel.enemy_list:
+        enemy.level = newlevel
+    return newlevel
 
+def initplayer():
+    p = player.Player(current_level.player_start[0],current_level.player_start[1])
+    return p
 
 # Initialize pygame
 pygame.init()
@@ -32,17 +47,16 @@ flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
 # Set the level to load
-current_level = levels.Customlevel()
+current_level = changelevel("level01.json")
 
 # Initialize the player class and pass the current level to it, for collision detection
-player = player.Player(current_level.player_start[0],current_level.player_start[1] )
+player = initplayer()
 player.level = current_level
 
-hpmeter = hud.HealthMeter(player)
+hud = hud.Hud(player)
 
 """ vars.active_sprites.add(current_level.wall_list) 
 vars.active_sprites.add(current_level.platform_list) """
-vars.active_sprites.add(player)
 vars.active_sprites.add(current_level.enemy_list)
 
 for enemy in current_level.enemy_list:
@@ -80,6 +94,12 @@ while running:
                     vars.paused = False
                 else:
                     vars.paused = True
+            if event.key == pygame.K_F1:
+                current_level.destroy_level()
+                current_level = changelevel("levl2.json")
+                player.level = current_level
+                player.rect.topleft = current_level.player_start
+                vars.visible_sprites.add(player)
             # Was it the Escape key? If so, stop the loop.
             if event.key == K_ESCAPE:
                 running = False
@@ -101,11 +121,12 @@ while running:
         if is_onscreen(thing):
             screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
-    screen.blit(hpmeter.text, (hpmeter.rect.x,hpmeter.rect.y))
-    hpmeter.update()
+    screen.blit(hud.text, (hud.rect.x,hud.rect.y))
+    hud.update()
 
     # Update the active sprites, unless the game is paused
     if not vars.paused:
+        vars.player_sprites.update()
         vars.active_sprites.update()
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them

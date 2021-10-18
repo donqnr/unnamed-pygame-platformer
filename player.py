@@ -87,7 +87,7 @@ class Player(pygame.sprite.Sprite):
         self.asd = 0.0
 
         # The player's movement speed
-        self.speed = 1.5
+        self.speed = 1.2
 
         # Add the player to the player and visible sprite groups
         vars.player_sprites.add(self)
@@ -181,15 +181,15 @@ class Player(pygame.sprite.Sprite):
         """ Use floor division to control the speed of animation
             ex: run_duration // 5 means every five frames, it advances to the next sprite of the animation"""
 
-        if self.run_duration // 4 >= len(self.run_right):
+        if self.run_duration // 5 >= len(self.run_right):
             # Once it reaches the last sprite, reset the counter
             self.run_duration = 0
 
         # If character is facing right, use the right facing sprites. Otherwise use left.
         if (self.direction == 'r'):
-            self.surf = self.run_right[self.run_duration // 4]
+            self.surf = self.run_right[self.run_duration // 5]
         else:
-            self.surf = self.run_left[self.run_duration // 4]
+            self.surf = self.run_left[self.run_duration // 5]
         # Increase the counter by one
         self.run_duration += 1
 
@@ -257,7 +257,6 @@ class Player(pygame.sprite.Sprite):
 
     def death(self):
         vars.visible_sprites.remove(self)
-        vars.player_sprites.remove(self)
 
         deathfx = fx.PlayerDeath(self.rect.centerx, self.rect.centery)
         vars.visible_sprites.add(deathfx)
@@ -276,12 +275,12 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def takedamage(self, dmg):
-        if not self.invul_time > 0 and self.hp > 0:
-            self.hp -= 1
-            self.invul_time = 60
-            print(str(self.hp))
-        if self.hp <= 0:
-            self.state = "death"
+        if not self.is_dead():
+            if not self.invul_time > 0 and self.hp > 0:
+                self.hp -= 1
+                self.invul_time = 60
+            if self.hp <= 0:
+                self.state = "death"
 
     def push(self, x, y):
         pass
@@ -290,9 +289,13 @@ class Player(pygame.sprite.Sprite):
         self.state = "normal"
         self.rect.topleft = self.level.player_start
         vars.visible_sprites.add(self)
-        vars.player_sprites.add(self)
         self.hp = self.maxhp
         self.respawn_time = 120
+
+    def heal(self, amount):
+        self.hp += amount
+        if self.hp > self.maxhp:
+            self.hp = self.maxhp
 
         
         
