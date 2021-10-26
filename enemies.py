@@ -1,6 +1,6 @@
 import pygame
 import spritesheet
-import vars
+import globals
 import math
 
 # A lot of code copied from the player class, could refactor these and have them be a child of a more general character class
@@ -16,10 +16,10 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y = pos_y
         self.change_y = 0
         self.change_x = 0
-        self.max_speed = 2
+        self.max_speed = 1
         self.max_fall_speed = 5
-        vars.enemy_sprites.add(self)
-        vars.visible_sprites.add(self)
+        globals.enemy_sprites.add(self)
+        globals.visible_sprites.add(self)
         self.level = None
         self.hp = 2
         self.state = "normal"
@@ -85,7 +85,7 @@ class Enemy_01(Enemy):
         super(Enemy, self).__init__()
         pygame.sprite.Sprite.__init__(self)
         Enemy.__init__(self,pos_x,pos_y)
-        self.max_speed = 1.6
+        self.max_speed = 1.45
         self.asd = 0
         self.direction = 'l'
         self.run_duration = 0
@@ -110,7 +110,7 @@ class Enemy_01(Enemy):
         self.collision_detection()
         self.deal_damage()
 
-        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False)
+        hits = pygame.sprite.spritecollide(self, globals.player_sprites, False)
         for hit in hits:
             try:
                 hit.takedamage(1)
@@ -120,7 +120,7 @@ class Enemy_01(Enemy):
 
     def wait(self):
         self.change_x = 0
-        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False, pygame.sprite.collide_circle_ratio(7))
+        hits = pygame.sprite.spritecollide(self, globals.player_sprites, False, pygame.sprite.collide_circle_ratio(7))
         for hit in hits:
             self.state = "chase"
             self.target = hit
@@ -139,9 +139,9 @@ class Enemy_01(Enemy):
             self.run_duration = 0
 
         # If character is facing right, use the right facing sprites. Otherwise use left.
-        if self.change_x >= 0.15:
+        if self.change_x >= 0.1:
             self.surf = self.run_right[math.ceil(self.run_duration) // 7]
-        elif self.change_x <= -0.15:
+        elif self.change_x <= -0.1:
             self.surf = self.run_left[math.ceil(self.run_duration) // 7]
         else:
             self.surf = self.sheet.get_image(1,31,16,13)
@@ -165,13 +165,13 @@ class Enemy_01(Enemy):
             if self.target.rect.centerx < self.rect.centerx:
                 self.direction = 'l'
                 if self.change_x > self.max_speed - (self.max_speed * 2):
-                    self.change_x += -0.15
+                    self.change_x += -0.1
                 else:
                     self.change_x = -self.max_speed
             elif self.target.rect.centerx > self.rect.centerx:
                 self.direction = 'r'
                 if self.change_x < self.max_speed:
-                    self.change_x += 0.15
+                    self.change_x += 0.1
                 else:
                     self.change_x = self.max_speed
 
@@ -185,7 +185,7 @@ class Enemy_01(Enemy):
             pass
 
     def deal_damage(self):
-        hits = pygame.sprite.spritecollide(self, vars.player_sprites, False)
+        hits = pygame.sprite.spritecollide(self, globals.player_sprites, False)
         for hit in hits:
             try:
                 hit.takedamage(1)

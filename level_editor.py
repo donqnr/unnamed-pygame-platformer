@@ -1,7 +1,7 @@
 import pygame
 import json
 
-import vars
+import globals
 import constants
 import levels
 import cam
@@ -39,7 +39,7 @@ class CursorPosition(pygame.sprite.Sprite):
         self.surf = pygame.Surface((1,1))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        #vars.active_sprites.add(self)
+        #globals.active_sprites.add(self)
 
     def setpos(self, x, y):
         self.rect.x = x
@@ -56,7 +56,7 @@ def save_level(list):
 def load_level():
     with open("saved_level.json", 'r') as file:
         data = json.load(file)
-        vars.active_sprites.empty()
+        globals.active_sprites.empty()
         current_level.wall_list.empty()
         thing_list.empty()
         for block, pos, thingtype in data:
@@ -64,16 +64,16 @@ def load_level():
             thing.type = thingtype
             if thing.type == "bg":
                 current_level.bg_list.add(thing)
-                vars.active_sprites.add(thing)
+                globals.active_sprites.add(thing)
             elif thing.type == "wall":
                 current_level.wall_list.add(thing)
-                vars.active_sprites.add(thing)
+                globals.active_sprites.add(thing)
             elif thing.type == "platform":
                 current_level.platform_list.add(thing)
-                vars.active_sprites.add(thing)
+                globals.active_sprites.add(thing)
             elif thing.type == "enemy":
                 current_level.enemy_list.add(thing)
-                vars.active_sprites.add(thing)
+                globals.active_sprites.add(thing)
             thing_list.add(thing)
         
 def add_to_list(tile):
@@ -85,7 +85,7 @@ def add_to_list(tile):
         current_level.platform_list.add(tile)
     elif tile.type == "enemy":
         current_level.enemy_list.add(tile)
-    vars.active_sprites.add(tile)
+    globals.active_sprites.add(tile)
 
 # Initialize pygame
 pygame.init()
@@ -102,7 +102,7 @@ screen = pygame.display.set_mode((constants.EDITOR_SCREEN_WIDTH, constants.EDITO
 player = player.Player(current_level.player_start[0],current_level.player_start[1])
 
 # Add the level sprites and the player to the active sprites list
-vars.active_sprites.add(player)
+globals.active_sprites.add(player)
 
 # Variable to keep the main loop running
 running = True
@@ -249,7 +249,7 @@ while running:
     blockpreview = selected_thing_list[selected_thing]((pos[0] - cam.x), (pos[1] - cam.y))
 
     # Blit all the active sprites
-    """ for thing in vars.active_sprites:
+    """ for thing in globals.active_sprites:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y)) """
 
 
@@ -287,7 +287,7 @@ while running:
         if selected_thing_type == "enemy":
             hits = pygame.sprite.spritecollide(tile, current_level.enemy_list, False) 
         if len(hits) == 0:
-            vars.visible_sprites.add(tile)
+            globals.visible_sprites.add(tile)
             print(tile.name + " placed at " + str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8) + " as " + selected_thing_type)
             if tile.type == "wall":
                 tile.type = selected_thing_type 
@@ -298,7 +298,7 @@ while running:
 
 
     if pygame.mouse.get_pressed()[2] == 1:
-        hits = pygame.sprite.spritecollide(cursorpos, vars.active_sprites, False)
+        hits = pygame.sprite.spritecollide(cursorpos, globals.active_sprites, False)
         for hit in hits:
             pygame.sprite.Sprite.kill(hit)
             print("Removed " + hit.type + " " + hit.name)

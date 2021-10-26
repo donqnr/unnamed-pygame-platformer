@@ -1,6 +1,6 @@
 import pygame
 import spritesheet
-import vars
+import globals
 import projectiles
 import math
 import fx
@@ -87,11 +87,11 @@ class Player(pygame.sprite.Sprite):
         self.asd = 0.0
 
         # The player's movement speed
-        self.speed = 1.2
+        self.speed = 1.5
 
         # Add the player to the player and visible sprite groups
-        vars.player_sprites.add(self)
-        vars.visible_sprites.add(self)
+        globals.player_sprites.add(self)
+        globals.visible_sprites.add(self)
         
     # Update the player character
     def update(self):
@@ -121,9 +121,9 @@ class Player(pygame.sprite.Sprite):
         if self.invul_time > 0 and not self.is_dead():
             self.invul_time -= 1
             if (self.invul_time % 2) == 0:
-                vars.visible_sprites.add(self)
+                globals.visible_sprites.add(self)
             else:
-                vars.visible_sprites.remove(self)
+                globals.visible_sprites.remove(self)
 
 
 
@@ -256,11 +256,11 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def death(self):
-        vars.visible_sprites.remove(self)
+        globals.visible_sprites.remove(self)
 
         deathfx = fx.PlayerDeath(self.rect.centerx, self.rect.centery)
-        vars.visible_sprites.add(deathfx)
-        vars.active_sprites.add(deathfx)
+        globals.visible_sprites.add(deathfx)
+        globals.active_sprites.add(deathfx)
         self.state = "deathloop"
 
     def deathloop(self):
@@ -288,7 +288,7 @@ class Player(pygame.sprite.Sprite):
     def respawn(self):
         self.state = "normal"
         self.rect.topleft = self.level.player_start
-        vars.visible_sprites.add(self)
+        globals.visible_sprites.add(self)
         self.hp = self.maxhp
         self.respawn_time = 120
 
@@ -306,7 +306,7 @@ class GroundCheck(pygame.sprite.Sprite):
         self.surf = pygame.Surface((x,1))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        #vars.active_sprites.add(self)
+        #globals.active_sprites.add(self)
 
     def setpos(self, x, y):
         self.rect.x = x
@@ -325,8 +325,8 @@ class MuzzleFlash(pygame.sprite.Sprite):
 
     def flash(self, dur):
         self.setpos()
-        vars.visible_sprites.add(self)
-        vars.active_sprites.add(self)
+        globals.visible_sprites.add(self)
+        globals.active_sprites.add(self)
         self.duration = dur
         self.counter = 0
 

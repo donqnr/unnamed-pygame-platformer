@@ -6,7 +6,7 @@ import constants
 import enemies
 import json
 import things
-import vars
+import globals
 
 
 class Level():
@@ -30,16 +30,16 @@ class Level():
                 thing.type = thingtype
                 if thing.type == "bg":
                     self.bg_list.add(thing)
-                    vars.bg_sprites.add(thing)
+                    globals.bg_sprites.add(thing)
                 elif thing.type == "wall":
                     self.wall_list.add(thing)
-                    vars.visible_sprites.add(thing)
+                    globals.visible_sprites.add(thing)
                 elif thing.type == "platform":
                     self.platform_list.add(thing)
-                    vars.visible_sprites.add(thing)
+                    globals.visible_sprites.add(thing)
                 elif thing.type == "enemy":
                     self.enemy_list.add(thing)
-                    vars.visible_sprites.add(thing)
+                    globals.visible_sprites.add(thing)
     def destroy_level(self):
         self.bg_list.empty()
         self.wall_list.empty()
