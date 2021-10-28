@@ -1,12 +1,11 @@
 import sys
 import pygame
+import json
 
 import platforms
 import constants
-import enemies
-import json
 import things
-import globals
+from scripts import globals
 
 
 class Level():
@@ -21,6 +20,10 @@ class Level():
         self.player_start = (0,0)
         # Set the background image for the level
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
+        # Set which level comes next
+        self.nextlevel = None
+        # Will the player spawn in the level? (True for a playable level, False for menu background, cutscenes etc.)
+        self.spawnplayer = True
 
     def build_level(self, level_file):
         with open(level_file, 'r') as file:
@@ -40,6 +43,7 @@ class Level():
                 elif thing.type == "enemy":
                     self.enemy_list.add(thing)
                     globals.visible_sprites.add(thing)
+    
     def destroy_level(self):
         self.bg_list.empty()
         self.wall_list.empty()

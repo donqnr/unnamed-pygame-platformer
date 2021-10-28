@@ -3,7 +3,7 @@ import platforms
 import enemies
 
 
-""" Classes to be placed in a level with the level editor """
+""" Classes that are used to place things like walls, enemies, pickups and such with a level editor, and also when building a level """
 
 class Tan_Tile_01(platforms.Wall):
     def __init__(self, pos_x, pos_y):
@@ -325,9 +325,9 @@ class Ground_Tile_06(platforms.Wall):
         self.rect.move_ip(pos_x,pos_y)
         self.type = "wall"
 
-class Enemy_01(enemies.Enemy_01):
+from enemies import Enemy01
+class Enemy_01(Enemy01.Enemy_01):
     def __init__(self, pos_x, pos_y):
-        super(enemies.Enemy, self).__init__()
-        enemies.Enemy_01.__init__(self,pos_x,pos_y)
+        Enemy01.Enemy_01.__init__(self,pos_x,pos_y)
         self.name = "Enemy_01"
         self.type = "enemy"

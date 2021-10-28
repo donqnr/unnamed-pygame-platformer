@@ -1,7 +1,7 @@
 import pygame
 import json
 
-import globals
+from scripts import globals
 import constants
 import levels
 import cam

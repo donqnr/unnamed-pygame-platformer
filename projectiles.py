@@ -1,6 +1,6 @@
 import pygame
 import spritesheet
-import globals
+from scripts import globals
 
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, speed_x, speed_y):

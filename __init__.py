@@ -2,7 +2,7 @@ import pygame
 import levels
 import player
 import constants
-import globals
+from scripts import globals
 import cam
 import hud
 
@@ -143,4 +143,4 @@ while running:
         cam.set_pos_y(player.rect.top - constants.SCREEN_HEIGHT * .5 - -30)
 
     # Update the image
-    pygame.display.update()
+    pygame.display.flip()

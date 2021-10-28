@@ -1,6 +1,6 @@
 import pygame
 import spritesheet
-import globals
+from scripts import globals
 import projectiles
 import math
 import fx
