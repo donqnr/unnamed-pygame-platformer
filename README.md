@@ -4,8 +4,9 @@ A platformer developed with pygame, along with a level editor
 Very work-in-progress, even moreso with the level editor
 
 Requires:
-Python 3: https://www.python.org/
-Pygame: https://www.pygame.org
+
+    Python 3: https://www.python.org/
+    Pygame: https://www.pygame.org
 
 Run __init__.py to start the game
 level_editor.py for the level editor
