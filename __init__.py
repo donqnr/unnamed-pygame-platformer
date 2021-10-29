@@ -113,13 +113,13 @@ while running:
 
     # Draw the background elements of the level, before any others
     for thing in globals.bg_sprites:
-        if is_onscreen(thing):
-            screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+#        if is_onscreen(thing):
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
     # Draw visible sprites, in relation to the camera's position.
     for thing in globals.visible_sprites:
-        if is_onscreen(thing):
-            screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+#        if is_onscreen(thing):
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
     screen.blit(hud.text, (hud.rect.x,hud.rect.y))
     hud.update()
