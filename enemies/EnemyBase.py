@@ -20,7 +20,6 @@ class Enemy(pygame.sprite.Sprite):
         self.max_fall_speed = 5
         globals.enemy_sprites.add(self)
         globals.visible_sprites.add(self)
-        self.level = None
         self.hp = 2
         self.state = "normal"
         self.target = None
@@ -51,7 +50,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def collision_detection(self):
         # Check for collision horizontally, prevent the character from moving through walls
-        wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
+        wallhits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
         for wall in wallhits:
             if self.change_x > 0:
                 self.rect.right = wall.rect.left
@@ -61,7 +60,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y += self.change_y
 
         # Check for collision vertically, prevent the character from falling or jumping through walls
-        wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
+        wallhits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
         for wall in wallhits:
             if self.change_y > 0:
                 self.rect.bottom = wall.rect.top
@@ -71,7 +70,7 @@ class Enemy(pygame.sprite.Sprite):
             self.change_y = 0
     
         # Check for collision on platforms, the player can move and jump through them, while being able to land and stand on top of them
-        platformhits = pygame.sprite.spritecollide(self, self.level.platform_list, False)
+        platformhits = pygame.sprite.spritecollide(self, globals.current_level.platform_list, False)
         for plat in platformhits:
             if self.change_y > 0:
                 if self.rect.bottom - self.change_y < plat.rect.bottom:

@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from enemies.enemybase import Enemy
+from enemies.EnemyBase import Enemy
 from scripts import globals
 
 class Enemy_01(Enemy):

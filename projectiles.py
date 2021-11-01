@@ -19,7 +19,6 @@ class Projectile(pygame.sprite.Sprite):
         self.state = "spawn"
         globals.active_sprites.add(self)
         globals.visible_sprites.add(self)
-        self.level = None
         self.deathanimtime = 0
         self.deathanim = [self.sheet.get_image(1, 10, 12, 12),
                         self.sheet.get_image(15, 10, 12, 12),
@@ -53,7 +52,7 @@ class Projectile(pygame.sprite.Sprite):
         if self.lifetime >= self.lifespan:
             self.state = "predeath"
         
-        hits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
+        hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
         if hits:
             self.state = "predeath"
 

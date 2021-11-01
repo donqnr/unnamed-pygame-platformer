@@ -30,8 +30,6 @@ def changelevel(level_file):
     globals.active_sprites.empty()
     newlevel = levels.Customlevel(level_file)
     globals.active_sprites.add(newlevel.enemy_list)
-    for enemy in newlevel.enemy_list:
-        enemy.level = newlevel
     return newlevel
 
 def initplayer():
@@ -51,7 +49,6 @@ globals.current_level = changelevel("level01.json")
 
 # Initialize the player class and pass the current level to it, for collision detection
 player = initplayer()
-player.level = globals.current_level
 
 hud = hud.Hud(player)
 

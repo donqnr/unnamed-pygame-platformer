@@ -325,9 +325,9 @@ class Ground_Tile_06(platforms.Wall):
         self.rect.move_ip(pos_x,pos_y)
         self.type = "wall"
 
-from enemies import enemy01
-class Enemy_01(enemy01.Enemy_01):
+from enemies import Enemy01
+class Enemy_01(Enemy01.Enemy_01):
     def __init__(self, pos_x, pos_y):
-        enemy01.Enemy_01.__init__(self,pos_x,pos_y)
+        Enemy01.Enemy_01.__init__(self,pos_x,pos_y)
         self.name = "Enemy_01"
         self.type = "enemy"

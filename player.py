@@ -55,9 +55,6 @@ class Player(pygame.sprite.Sprite):
         # Set the maximum falling speed
         self.max_fall_speed = 4.0
 
-        # Get the currently loaded level, used for collision detection
-        self.level = None
-
         # Variables for movement
         self.change_x = 0
         self.change_y = 0
@@ -195,7 +192,7 @@ class Player(pygame.sprite.Sprite):
 
     def collision_detection(self, pressed_keys):
         # Check for collision horizontally, prevent the character from moving through walls
-        wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
+        wallhits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
         for wall in wallhits:
             if self.change_x > 0:
                 self.rect.right = wall.rect.left
@@ -206,7 +203,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += math.floor(self.change_y)
 
         # Check for collision vertically, prevent the character from falling or jumping through walls
-        wallhits = pygame.sprite.spritecollide(self, self.level.wall_list, False)
+        wallhits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
         for wall in wallhits:
             if self.change_y > 0:
                 self.rect.bottom = wall.rect.top
@@ -216,7 +213,7 @@ class Player(pygame.sprite.Sprite):
             self.change_y = 0
     
         # Check for collision on platforms, the player can move and jump through them, while being able to land and stand on top of them
-        platformhits = pygame.sprite.spritecollide(self, self.level.platform_list, False)
+        platformhits = pygame.sprite.spritecollide(self, globals.current_level.platform_list, False)
         for plat in platformhits:
             if self.change_y > 0:
                 #if self.rect.bottom - self.change_y < plat.rect.bottom and not pressed_keys[K_DOWN]:
@@ -234,7 +231,6 @@ class Player(pygame.sprite.Sprite):
                 shotx = self.rect.right - 6
                 shotspeed = 6
             proj = projectiles.Projectile(shotx,self.rect.centery,shotspeed,0)
-            proj.level = self.level
             self.muzzleflash.flash(2)
             
     # Jumping function
@@ -248,8 +244,8 @@ class Player(pygame.sprite.Sprite):
         """ Get collision from walls and platforms, check if they collide with the ground check actor
         If there is collision, character is on ground and returns True
         Else, the character is off the ground and returns False """
-        hits = pygame.sprite.spritecollide(self.groundcheck, self.level.wall_list, False)
-        hits.extend(pygame.sprite.spritecollide(self.groundcheck, self.level.platform_list, False))
+        hits = pygame.sprite.spritecollide(self.groundcheck, globals.current_level.wall_list, False)
+        hits.extend(pygame.sprite.spritecollide(self.groundcheck, globals.current_level.platform_list, False))
         if hits:
             return True
 
@@ -287,7 +283,7 @@ class Player(pygame.sprite.Sprite):
 
     def respawn(self):
         self.state = "normal"
-        self.rect.topleft = self.level.player_start
+        self.rect.topleft = globals.current_level.player_start
         globals.visible_sprites.add(self)
         self.hp = self.maxhp
         self.respawn_time = 120
