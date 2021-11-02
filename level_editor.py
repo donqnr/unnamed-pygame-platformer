@@ -146,7 +146,11 @@ blocklist = [things.Tan_Tile_01,
             things.Ground_Tile_05,
             things.Ground_Tile_06,]
 
+# List of all enemies that can be placed
 enemylist = [things.Enemy_01,]
+
+# List of 
+misclist = []
 
 # Position of the cursor on the screen
 pos = (0,0)
