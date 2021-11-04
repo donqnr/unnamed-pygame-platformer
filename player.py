@@ -4,6 +4,7 @@ from scripts import globals
 import projectiles
 import math
 import fx
+from weapons.plasmarifle import PlasmaRifle
 
 from pygame.locals import (
     KEYDOWN,
@@ -59,6 +60,10 @@ class Player(pygame.sprite.Sprite):
         self.change_x = 0
         self.change_y = 0
 
+        # Currently equipped weapon
+        self.weapon = PlasmaRifle()
+        self.weapon.owner = self
+
         # Initialize class that's used to check if the player is on ground
         self.groundcheck = GroundCheck(self.rect.width)
 
@@ -102,6 +107,7 @@ class Player(pygame.sprite.Sprite):
         if self.state == "normal":
             # Call the move function, pass the keypresses to it
             self.move(pressed_keys)
+            self.weapon.update()
         if self.state == "death":
             self.death()
         if self.state == "deathloop":
@@ -224,13 +230,14 @@ class Player(pygame.sprite.Sprite):
     # Function for firing the gun
     def shoot(self):
         if not self.is_dead():
-            if self.direction == 'l':
+            """ if self.direction == 'l':
                 shotx = self.rect.left
                 shotspeed = -6
             else:
                 shotx = self.rect.right - 6
                 shotspeed = 6
-            proj = projectiles.Projectile(shotx,self.rect.centery,shotspeed,0)
+            proj = projectiles.Projectile(shotx,self.rect.centery, 6, 0) """
+            self.weapon.triggerdown()
             self.muzzleflash.flash(2)
             
     # Jumping function

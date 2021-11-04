@@ -85,6 +85,14 @@ class Enemy_01(Enemy):
         self.move_anim()
 
     def chase(self):
+        try:
+            if self.target.is_dead():
+                self.target = None
+                self.surf = self.sheet.get_image(1,31,16,13)
+                self.state = "normal"
+        except AttributeError:
+            pass
+
         if self.target != None:
             if self.target.rect.centerx < self.rect.centerx:
                 self.direction = 'l'
@@ -100,13 +108,6 @@ class Enemy_01(Enemy):
                     self.change_x = self.max_speed
 
         self.move()
-        try:
-            if self.target.is_dead():
-                self.target = None
-                self.surf = self.sheet.get_image(1,31,16,13)
-                self.state = "normal"
-        except AttributeError:
-            pass
 
     def deal_damage(self):
         hits = pygame.sprite.spritecollide(self, globals.player_sprites, False)
