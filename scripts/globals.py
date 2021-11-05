@@ -9,3 +9,4 @@ bg_sprites = sprite.Group() # Group for background blocks, to be blitted before 
 current_level = None # 
 
 paused = False # Boolean to handle pausing
+running = True # Variable to keep the main loop running

@@ -1,4 +1,3 @@
-import pygame
 import constants
 
 class Cam():

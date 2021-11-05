@@ -4,7 +4,7 @@ from scripts import globals
 import projectiles
 import math
 import fx
-from weapons.plasmarifle import PlasmaRifle
+from scripts.weapons import PlasmaRifle
 
 from pygame.locals import (
     KEYDOWN,
@@ -240,9 +240,12 @@ class Player(pygame.sprite.Sprite):
             self.weapon.triggerdown()
             self.muzzleflash.flash(2)
             
+    def stopshoot(self):
+        self.weapon.triggerup()
+        
     # Jumping function
     def jump(self):
-        # Check if the player character is on ground before allowing them to jump
+        # Check if the player character is on ground and not dead before allowing them to jump
         if self.is_grounded() and not self.is_dead():
             self.change_y = -4
 
