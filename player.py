@@ -68,9 +68,6 @@ class Player(pygame.sprite.Sprite):
         self.groundcheck = GroundCheck(self.rect.width)
 
         # Initialize class for showing the muzzleflash when firing
-        self.muzzleflash = MuzzleFlash(self)
-        self.muzzleflash.rect.x = self.rect.centerx
-        self.muzzleflash.rect.y = self.rect.centery
 
         # Player's health and the maximum amount 
         self.hp = 8
@@ -238,7 +235,6 @@ class Player(pygame.sprite.Sprite):
                 shotspeed = 6
             proj = projectiles.Projectile(shotx,self.rect.centery, 6, 0) """
             self.weapon.triggerdown()
-            self.muzzleflash.flash(2)
             
     def stopshoot(self):
         self.weapon.triggerup()
@@ -317,36 +313,3 @@ class GroundCheck(pygame.sprite.Sprite):
     def setpos(self, x, y):
         self.rect.x = x
         self.rect.y = y
-
-class MuzzleFlash(pygame.sprite.Sprite):
-    def __init__(self, owner):
-        pygame.sprite.Sprite.__init__(self)
-        self.surf = pygame.image.load("assets/sprites/muzzleflash.png").convert_alpha()
-        self.right = self.surf
-        self.left = pygame.transform.flip(self.surf, True, False)
-        self.rect = self.surf.get_rect()
-        self.counter = 0
-        self.duration = 0
-        self.owner = owner
-
-    def flash(self, dur):
-        self.setpos()
-        globals.visible_sprites.add(self)
-        globals.active_sprites.add(self)
-        self.duration = dur
-        self.counter = 0
-
-    def update(self):
-        self.setpos()
-        self.counter += 1
-        if self.counter > self.duration:
-            pygame.sprite.Sprite.kill(self)
-
-    def setpos(self):
-        self.rect.y = self.owner.rect.centery - 4
-        if self.owner.direction == 'l':
-            self.surf = self.left
-            self.rect.right = self.owner.rect.left
-        else:
-            self.surf = self.right
-            self.rect.left = self.owner.rect.right

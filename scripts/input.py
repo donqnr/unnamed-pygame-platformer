@@ -38,18 +38,27 @@ class InputHandler():
                 # Was it the Escape key? If so, stop the loop.
                 if event.key == K_ESCAPE:
                     globals.running = False
-                # Error check in case the player class isn't passed properly
-                try:
-                    # If the key was spacebar, try to jump
-                    if event.key == pygame.K_SPACE and not globals.paused:
-                        self.player.jump()
-                    # When left ctrl is held down, start shooting
-                    if event.key == pygame.K_LCTRL and not globals.paused:
-                        self.player.shoot()
-                except AttributeError:
-                    print("ERROR: Player not set properly in the input handler")
 
-            if event.type == KEYUP:
-                # When left ctrl is not held down, stop shooting
-                if event.key == pygame.K_LCTRL and not globals.paused:
-                    self.player.stopshoot()
+
+                # ///////////////
+                # Player controls
+                # ///////////////
+                if not globals.paused:
+                    # Error check in case the player class isn't passed properly
+                    try:
+                        # If the key was spacebar, try to jump
+                        if event.key == pygame.K_SPACE:
+                            self.player.jump()
+                        # When left ctrl is held down, start shooting
+                        if event.key == pygame.K_LCTRL:
+                            self.player.shoot()
+                    except AttributeError:
+                        print("ERROR: Player not set properly in the input handler")
+            if not globals.paused:
+                if event.type == KEYUP:
+                    # When left ctrl is not held down, stop shooting
+                    try:
+                        if event.key == pygame.K_LCTRL:
+                            self.player.stopshoot()
+                    except AttributeError:
+                        pass

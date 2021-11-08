@@ -6,15 +6,6 @@ from scripts import globals, input
 import cam
 import hud
 
-from pygame.locals import (
-    K_ESCAPE,
-    K_PAUSE,
-    K_F1,
-    K_F2,
-    KEYDOWN,
-    QUIT,
-)
-
 # Function to check if a sprite is near or in the viewport
 def is_onscreen(thing):
     # Apologies for this abomination of a line
@@ -52,8 +43,6 @@ p1 = initplayer()
 
 hud = hud.Hud(p1)
 
-""" globals.active_sprites.add(globals.current_level.wall_list) 
-globals.active_sprites.add(globals.current_level.platform_list) """
 globals.active_sprites.add(globals.current_level.enemy_list)
 
 for enemy in globals.current_level.enemy_list:
