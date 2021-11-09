@@ -1,10 +1,9 @@
 import pygame
 import spritesheet
 from scripts import globals
-import projectiles
 import math
 import fx
-from scripts.weapons import PlasmaRifle
+from scripts.weapons import MachineGun, PlasmaRifle
 
 from pygame.locals import (
     KEYDOWN,
@@ -60,14 +59,17 @@ class Player(pygame.sprite.Sprite):
         self.change_x = 0
         self.change_y = 0
 
+        # List of weapons
+        self.weapons = [PlasmaRifle(),
+                        MachineGun()]
+        for wpn in self.weapons:
+            wpn.owner = self
+
         # Currently equipped weapon
-        self.weapon = PlasmaRifle()
-        self.weapon.owner = self
+        self.equipped_weapon = self.weapons[0]
 
         # Initialize class that's used to check if the player is on ground
         self.groundcheck = GroundCheck(self.rect.width)
-
-        # Initialize class for showing the muzzleflash when firing
 
         # Player's health and the maximum amount 
         self.hp = 8
@@ -103,8 +105,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.state == "normal":
             # Call the move function, pass the keypresses to it
-            self.move(pressed_keys)
-            self.weapon.update()
+            self.equipped_weapon.update()
         if self.state == "death":
             self.death()
         if self.state == "deathloop":
@@ -124,8 +125,6 @@ class Player(pygame.sprite.Sprite):
                 globals.visible_sprites.add(self)
             else:
                 globals.visible_sprites.remove(self)
-
-
 
     # Movement function
     def move(self, pressed_keys):
@@ -165,8 +164,8 @@ class Player(pygame.sprite.Sprite):
                 self.surf = self.spritesheet.get_image(10,34, 16, 17)
             else:
                 self.surf = self.spritesheet.get_image(46,34, 16, 17)
-        # Makes the player character move
 
+        # Make the player character move
         """ gfsdhj """
         self.asd += self.change_x - math.floor(self.change_x)
         if self.asd >= 1.0:
@@ -226,18 +225,12 @@ class Player(pygame.sprite.Sprite):
 
     # Function for firing the gun
     def shoot(self):
-        if not self.is_dead():
-            """ if self.direction == 'l':
-                shotx = self.rect.left
-                shotspeed = -6
-            else:
-                shotx = self.rect.right - 6
-                shotspeed = 6
-            proj = projectiles.Projectile(shotx,self.rect.centery, 6, 0) """
-            self.weapon.triggerdown()
+        if not self.is_dead() and self.equipped_weapon != None:
+            self.equipped_weapon.triggerdown()
             
     def stopshoot(self):
-        self.weapon.triggerup()
+        if self.equipped_weapon != None:
+            self.equipped_weapon.triggerup()
         
     # Jumping function
     def jump(self):

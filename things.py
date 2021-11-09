@@ -1,6 +1,5 @@
 import pygame
 import platforms
-import enemies
 
 
 """ Classes that are used to place things like walls, enemies, pickups and such with a level editor, and also when building a level """

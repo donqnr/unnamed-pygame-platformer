@@ -13,7 +13,7 @@ class Weapon():
         # Is the weapon automatic and keeps firing when the trigger is held down?
         self.auto = False
         # Amount of ammo left in the weapon
-        self.ammo = 0
+        self.ammo = 1
         # How much ammo the weapon takes per shot
         self.ammo_consumption = 0
         # State of the weapon
@@ -51,18 +51,19 @@ class Weapon():
 
     # Function to handle projectile spawning and such when the weapon fires
     def fire(self):
-        self.mflash.flash(2) # Call the muzzleflash to appear
-        if self.owner.direction == 'l': # Set the projectile speed depending on the player's direction
-            shotx = self.owner.rect.left
-            shotspeed = -self.projectile_speed[0]
-        else:
-            shotx = self.owner.rect.right - 6
-            shotspeed = self.projectile_speed[0]
-        proj = self.projectile(shotx,self.owner.rect.centery - 2,shotspeed,self.projectile_speed[0]) # Spawn the projectile
-        self.ammo -= self.ammo_consumption # Subtract ammo by the specified amount
-        self.fireratecooldown = self.firerate # Add a cooldown before the weapon can be fired again
-        if not self.auto: # If the weapon isn't automatic, set state to ready regardless if the trigger is held down
-            self.state = 'ready'
+        if self.ammo > 0:
+            self.mflash.flash(2) # Call the muzzleflash to appear
+            if self.owner.direction == 'l': # Set the projectile speed depending on the player's direction
+                shotx = self.owner.rect.left
+                shotspeed = -self.projectile_speed[0]
+            else:
+                shotx = self.owner.rect.right - 6
+                shotspeed = self.projectile_speed[0]
+            proj = self.projectile(shotx,self.owner.rect.centery - 2,shotspeed,self.projectile_speed[0]) # Spawn the projectile
+            self.ammo -= self.ammo_consumption # Subtract ammo by the specified amount
+            self.fireratecooldown = self.firerate # Add a cooldown before the weapon can be fired again
+            if not self.auto: # If the weapon isn't automatic, set state to ready regardless if the trigger is held down
+                self.state = 'ready'
 
 # Plasma Rifle, the starting weapon, which is relatively weak but doesn't consume any ammo
 
@@ -73,6 +74,18 @@ class PlasmaRifle(Weapon):
         self.projectile_speed = [6,0]
         self.auto = False
         self.firerate = 0
+
+# Machine Gun, automatic rapid-fire weapon
+
+class MachineGun(Weapon):
+    def __init__(self):
+        super().__init__()
+        Weapon.__init__(self)
+        self.projectile_speed = [8,0]
+        self.auto = True
+        self.firerate = 4
+        self.ammo = 50
+        self.ammo_consumption = 1
 
 class MuzzleFlash(pygame.sprite.Sprite):
     def __init__(self, owner):

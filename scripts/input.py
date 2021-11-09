@@ -1,4 +1,5 @@
 import pygame
+from fx import PlayerDeath
 from scripts import globals
 
 from pygame.locals import (
@@ -6,10 +7,15 @@ from pygame.locals import (
     K_PAUSE,
     K_F1,
     K_F2,
+    K_1,
+    K_2,
     KEYDOWN,
     KEYUP,
     QUIT,
+    K_LEFT,
+    K_RIGHT,
 )
+
 
 class InputHandler():
 
@@ -18,6 +24,7 @@ class InputHandler():
         self.player = None
 
     def CheckInput(self):
+
         for event in pygame.event.get():
             # Did the user hit a key?
             if event.type == KEYDOWN:
@@ -51,7 +58,11 @@ class InputHandler():
                             self.player.jump()
                         # When left ctrl is held down, start shooting
                         if event.key == pygame.K_LCTRL:
-                            self.player.shoot()
+                            self.player.shoot()     
+                        if event.key == pygame.K_1:    
+                            self.player.equipped_weapon = self.player.weapons[0]    
+                        if event.key == pygame.K_2:
+                            self.player.equipped_weapon = self.player.weapons[1]  
                     except AttributeError:
                         print("ERROR: Player not set properly in the input handler")
             if not globals.paused:
@@ -62,3 +73,5 @@ class InputHandler():
                             self.player.stopshoot()
                     except AttributeError:
                         pass
+        pressed_keys = pygame.key.get_pressed()
+        self.player.move(pressed_keys)
