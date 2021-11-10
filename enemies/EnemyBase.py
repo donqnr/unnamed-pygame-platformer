@@ -20,7 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         self.max_fall_speed = 5
         globals.enemy_sprites.add(self)
         globals.visible_sprites.add(self)
-        self.hp = 2
+        self.hp = 20
         self.state = "normal"
         self.target = None
         self.run_duration = 0

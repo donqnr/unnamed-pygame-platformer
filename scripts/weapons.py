@@ -1,15 +1,15 @@
 import pygame
-from projectiles import Projectile
+from projectiles import MGShot, PlasmaRifleShot
 from scripts import globals
-
+from random import random
 # 
 
 class Weapon():
     def __init__(self):
         # Speed of the projectile in x axis, then y axis
-        self.projectile_speed = [0,0]
+        self.projectile_speed = [0.0,0.0]
         # The projectile class the weapon fires
-        self.projectile = Projectile
+        self.projectile = PlasmaRifleShot
         # Is the weapon automatic and keeps firing when the trigger is held down?
         self.auto = False
         # Amount of ammo left in the weapon
@@ -26,7 +26,8 @@ class Weapon():
         self.owner = None
         # Muzzleflash class
         self.mflash = MuzzleFlash(self)
-
+        self.bullet_spread = 0
+        
     # Update the weapon based on its state
     def update(self):
         # If weapon is unequipped, do nothing
@@ -59,7 +60,7 @@ class Weapon():
             else:
                 shotx = self.owner.rect.right - 6
                 shotspeed = self.projectile_speed[0]
-            proj = self.projectile(shotx,self.owner.rect.centery - 2,shotspeed,self.projectile_speed[0]) # Spawn the projectile
+            proj = self.projectile(shotx,self.owner.rect.centery - 2,shotspeed,self.projectile_speed[1] + (self.bullet_spread * (random() - random()))) # Spawn the projectile
             self.ammo -= self.ammo_consumption # Subtract ammo by the specified amount
             self.fireratecooldown = self.firerate # Add a cooldown before the weapon can be fired again
             if not self.auto: # If the weapon isn't automatic, set state to ready regardless if the trigger is held down
@@ -71,7 +72,7 @@ class PlasmaRifle(Weapon):
     def __init__(self):
         super().__init__()
         Weapon.__init__(self)
-        self.projectile_speed = [6,0]
+        self.projectile_speed = [6.0,0.0]
         self.auto = False
         self.firerate = 0
 
@@ -81,11 +82,13 @@ class MachineGun(Weapon):
     def __init__(self):
         super().__init__()
         Weapon.__init__(self)
-        self.projectile_speed = [8,0]
+        self.projectile = MGShot
+        self.projectile_speed = [8.0,0]
         self.auto = True
         self.firerate = 4
         self.ammo = 50
-        self.ammo_consumption = 1
+        self.ammo_consumption = 0
+        self.bullet_spread = 0.25
 
 class MuzzleFlash(pygame.sprite.Sprite):
     def __init__(self, owner):

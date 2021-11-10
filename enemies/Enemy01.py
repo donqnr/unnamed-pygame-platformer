@@ -113,6 +113,6 @@ class Enemy_01(Enemy):
         hits = pygame.sprite.spritecollide(self, globals.player_sprites, False)
         for hit in hits:
             try:
-                hit.takedamage(1)
+                hit.takedamage(20)
             except AttributeError:
                 pass

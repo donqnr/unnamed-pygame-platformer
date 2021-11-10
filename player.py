@@ -72,8 +72,8 @@ class Player(pygame.sprite.Sprite):
         self.groundcheck = GroundCheck(self.rect.width)
 
         # Player's health and the maximum amount 
-        self.hp = 8
-        self.maxhp = 8
+        self.hp = 100
+        self.maxhp = 100
 
         # Player's state
         self.state = "normal"
@@ -272,7 +272,7 @@ class Player(pygame.sprite.Sprite):
     def takedamage(self, dmg):
         if not self.is_dead():
             if not self.invul_time > 0 and self.hp > 0:
-                self.hp -= 1
+                self.hp -= dmg
                 self.invul_time = 60
             if self.hp <= 0:
                 self.state = "death"

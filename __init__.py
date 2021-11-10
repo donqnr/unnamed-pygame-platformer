@@ -55,15 +55,11 @@ while globals.running:
     clock.tick(constants.FRAMERATE)
 
     # Draw the background of the current level
-    screen.blit(globals.current_level.background, (0,0))
+    screen.blit(globals
+    .current_level.background, (0,0))
 
     # Draw the background elements of the level, before any others
     for thing in globals.bg_sprites:
-#        if is_onscreen(thing):
-        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
-
-    # Draw visible sprites, in relation to the camera's position.
-    for thing in globals.visible_sprites:
 #        if is_onscreen(thing):
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
@@ -71,6 +67,11 @@ while globals.running:
     if not globals.paused:
         globals.player_sprites.update()
         globals.active_sprites.update()
+
+    # Draw visible sprites, in relation to the camera's position.
+    for thing in globals.visible_sprites:
+#        if is_onscreen(thing):
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
     screen.blit(hud.text, (hud.rect.x,hud.rect.y))
     hud.update()
