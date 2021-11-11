@@ -10,7 +10,8 @@ bg_sprites = sprite.Group() # Group for background blocks, to be blitted before 
 current_level = None # Currently loaded level
 
 paused = False # Boolean to handle pausing
-running = True # Variable to keep the main loop running
+running = True # Boolean to keep the main loop running
+hide_hud = False # Boolean to set HUD's visibility
 
 def changelevel(level_file):
     bg_sprites.empty()

@@ -51,12 +51,24 @@ inp.player = p1
 # Main loop
 while globals.running:
 
-    # Set the game to run at 60 FPS
+    # Set the game to run at the specified framerate
     clock.tick(constants.FRAMERATE)
 
+    # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
+    if p1.rect.right + cam.get_screen_center_x() > 5:
+        cam.set_pos_x(p1.rect.right - constants.SCREEN_WIDTH * .5 - 5)
+    
+    if p1.rect.left + cam.get_screen_center_x() < -40:
+        cam.set_pos_x(p1.rect.left - constants.SCREEN_WIDTH * .5 - -40)
+
+    if p1.rect.bottom + cam.get_screen_center_y() > 15:
+        cam.set_pos_y(p1.rect.bottom - constants.SCREEN_HEIGHT * .5 - 15)
+        
+    if p1.rect.top + cam.get_screen_center_y() < -30:
+        cam.set_pos_y(p1.rect.top - constants.SCREEN_HEIGHT * .5 - -30)
+
     # Draw the background of the current level
-    screen.blit(globals
-    .current_level.background, (0,0))
+    screen.blit(globals.current_level.background, (0,0))
 
     # Draw the background elements of the level, before any others
     for thing in globals.bg_sprites:
@@ -73,25 +85,14 @@ while globals.running:
 #        if is_onscreen(thing):
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
-    screen.blit(hud.text, (hud.rect.x,hud.rect.y))
+    if not globals.hide_hud:
+        screen.blit(hud.hp.text, (hud.hp.rect.x,hud.hp.rect.y))
+        screen.blit(hud.ammo.text, (hud.ammo.rect.x,hud.ammo.rect.y))
+        screen.blit(hud.wpn.text, (hud.wpn.rect.x,hud.wpn.rect.y))
+
     hud.update()
 
     inp.CheckInput()
 
-    # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
-    if p1.rect.right + cam.get_screen_center_x() > 5:
-        cam.set_pos_x(p1.rect.right - constants.SCREEN_WIDTH * .5 - 5)
-    
-    if p1.rect.left + cam.get_screen_center_x() < -40:
-        cam.set_pos_x(p1.rect.left - constants.SCREEN_WIDTH * .5 - -40)
-
-    if p1.rect.bottom + cam.get_screen_center_y() > 15:
-        cam.set_pos_y(p1.rect.bottom - constants.SCREEN_HEIGHT * .5 - 15)
-        
-    if p1.rect.top + cam.get_screen_center_y() < -30:
-        cam.set_pos_y(p1.rect.top - constants.SCREEN_HEIGHT * .5 - -30)
-
     # Update the image
-    pygame.display.flip()
-
-
+    pygame.display.update()

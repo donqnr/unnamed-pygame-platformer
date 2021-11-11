@@ -24,6 +24,7 @@ class Projectile(pygame.sprite.Sprite):
         self.deathanimtime = 0
         self.deathanim = PlasmaShotDeath
         self.asd = [0,0]
+        self.knockback = 1
 
     def update(self):
         if self.state == "spawn":
@@ -75,7 +76,16 @@ class Projectile(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
         if hits:
             try:
+                #if self.rect.centerx > hits[0].rect.centerx:
+                if self.speed_x < 0:
+                    hits[0].change_x -= self.knockback
+                    print('a')
+                #if self.rect.centerx < hits[0].rect.centerx:
+                if self.speed_x > 0:
+                    hits[0].change_x += self.knockback
+                    print('b')
                 hits[0].takedamage(self.damage)
+
             except AttributeError:
                 pass
             self.state = "predeath"
@@ -84,19 +94,22 @@ class PlasmaRifleShot(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y):
         super(Projectile, self).__init__()
         Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y)
+        self.damage = 5
         self.surf = self.sheet.get_image(2,2,6,6)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
+        self.knockback = 2.5
 
 class MGShot(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y):
         super(Projectile, self).__init__()
         Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y)
-        self.damage = 4
+        self.damage = 3
         self.surf = self.sheet.get_image(1,24,4,2)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y + 3
         self.deathanim = MGShotDeath
+        self.knockback = 0.7
         

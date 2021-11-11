@@ -101,7 +101,7 @@ class Player(pygame.sprite.Sprite):
         pressed_keys = pygame.key.get_pressed()
 
         # Set the ground check actor below the player character
-        self.groundcheck.setpos(self.rect.x,self.rect.bottom)
+        #self.groundcheck.setpos(self.rect.x,self.rect.bottom)
 
         if self.state == "normal":
             # Call the move function, pass the keypresses to it
@@ -125,6 +125,7 @@ class Player(pygame.sprite.Sprite):
                 globals.visible_sprites.add(self)
             else:
                 globals.visible_sprites.remove(self)
+        self.groundcheck.setpos(self.rect.x,self.rect.bottom)
 
     # Movement function
     def move(self, pressed_keys):
@@ -301,7 +302,7 @@ class GroundCheck(pygame.sprite.Sprite):
         self.surf = pygame.Surface((x,1))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        #globals.active_sprites.add(self)
+        #globals.visible_sprites.add(self)
 
     def setpos(self, x, y):
         self.rect.x = x

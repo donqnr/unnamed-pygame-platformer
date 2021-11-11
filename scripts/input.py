@@ -7,6 +7,7 @@ from pygame.locals import (
     K_PAUSE,
     K_F1,
     K_F2,
+    K_F12,
     K_1,
     K_2,
     KEYDOWN,
@@ -45,12 +46,17 @@ class InputHandler():
                 # Was it the Escape key? If so, stop the loop.
                 if event.key == K_ESCAPE:
                     globals.running = False
+                if event.key == K_F12:
+                    if globals.hide_hud:
+                        globals.hide_hud = False
+                    elif not globals.hide_hud:
+                        globals.hide_hud = True
 
 
                 # ///////////////
                 # Player controls
                 # ///////////////
-                if not globals.paused:
+                if not globals.paused and not self.player.is_dead():
                     # Error check in case the player class isn't passed properly
                     try:
                         # If the key was spacebar, try to jump
@@ -74,4 +80,5 @@ class InputHandler():
                     except AttributeError:
                         pass
         pressed_keys = pygame.key.get_pressed()
-        self.player.move(pressed_keys)
+        if not globals.paused and not self.player.is_dead():
+            self.player.move(pressed_keys)

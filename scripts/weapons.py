@@ -27,6 +27,7 @@ class Weapon():
         # Muzzleflash class
         self.mflash = MuzzleFlash(self)
         self.bullet_spread = 0
+        self.name = "wpedssdfcdfsdfs"
         
     # Update the weapon based on its state
     def update(self):
@@ -74,7 +75,8 @@ class PlasmaRifle(Weapon):
         Weapon.__init__(self)
         self.projectile_speed = [6.0,0.0]
         self.auto = False
-        self.firerate = 0
+        self.firerate = 3
+        self.name = "Plasma Rifle"
 
 # Machine Gun, automatic rapid-fire weapon
 
@@ -83,12 +85,13 @@ class MachineGun(Weapon):
         super().__init__()
         Weapon.__init__(self)
         self.projectile = MGShot
-        self.projectile_speed = [8.0,0]
+        self.projectile_speed = [10.5,0]
         self.auto = True
-        self.firerate = 4
-        self.ammo = 50
-        self.ammo_consumption = 0
-        self.bullet_spread = 0.25
+        self.firerate = 3
+        self.ammo = 200
+        self.ammo_consumption = 1
+        self.bullet_spread = 0.4
+        self.name = "Machine Gun"
 
 class MuzzleFlash(pygame.sprite.Sprite):
     def __init__(self, owner):
