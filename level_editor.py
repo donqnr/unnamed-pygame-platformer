@@ -1,13 +1,7 @@
 import pygame
 import json
 
-from scripts import globals
-import constants
-import levels
-import cam
-import player
-import things
-
+from scripts import globals, constants, player, levels, cam, things
 from pygame.locals import (
     K_ESCAPE,
     K_w,

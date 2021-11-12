@@ -17,6 +17,11 @@ Game Controls:
     Arrow keys: Move
     Spacebar: Jump
     Left Control: Shoot
+    Number keys: Select weapon
+        1: Plasma Rifle
+        2: Machine Gun
+    Pause: Pause the game
+    F12: Hide/Show HUD
 
 
 Level editor controls:

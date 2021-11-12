@@ -1,5 +1,5 @@
 from pygame import sprite
-import levels
+from scripts import levels
 
 active_sprites = sprite.Group() # Sprites that are updated each frame (Player, enemies)
 visible_sprites = sprite.Group() # Group to handle the visibility of a sprite

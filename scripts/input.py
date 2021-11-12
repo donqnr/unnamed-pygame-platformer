@@ -1,5 +1,4 @@
 import pygame
-from fx import PlayerDeath
 from scripts import globals
 
 from pygame.locals import (

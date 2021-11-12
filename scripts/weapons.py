@@ -1,5 +1,5 @@
 import pygame
-from projectiles import MGShot, PlasmaRifleShot
+from scripts.projectiles import MGShot, PlasmaRifleShot
 from scripts import globals
 from random import random
 # 

@@ -1,10 +1,5 @@
 import pygame
-import levels
-import player
-import constants
-from scripts import globals, input
-import cam
-import ui
+from scripts import globals, input, constants, player, ui, cam, levels
 
 # Function to check if a sprite is near or in the viewport
 def is_onscreen(thing):
