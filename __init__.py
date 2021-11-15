@@ -23,11 +23,12 @@ flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
 # Set the level to load
-globals.current_level = globals.changelevel("level01.json")
+globals.current_level = levels.Level01()
 
 # Initialize the player class and pass the current level to it, for collision detection
 p1 = initplayer()
 
+# Initialize the HUD
 hud = ui.Hud(p1)
 
 globals.active_sprites.add(globals.current_level.enemy_list)

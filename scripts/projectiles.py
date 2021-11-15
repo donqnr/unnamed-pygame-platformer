@@ -75,14 +75,10 @@ class Projectile(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
         if hits:
             try:
-                #if self.rect.centerx > hits[0].rect.centerx:
                 if self.speed_x < 0:
                     hits[0].change_x -= self.knockback
-                    print('a')
-                #if self.rect.centerx < hits[0].rect.centerx:
                 if self.speed_x > 0:
                     hits[0].change_x += self.knockback
-                    print('b')
                 hits[0].takedamage(self.damage)
 
             except AttributeError:

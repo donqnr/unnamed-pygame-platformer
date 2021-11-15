@@ -12,10 +12,11 @@ from pygame.locals import (
     K_UP,
     KEYDOWN,
     QUIT,
-    K_F1,
-    K_F2,
-    K_F3,
-    K_F4,
+    K_1,
+    K_2,
+    K_3,
+    K_4,
+    K_5,
     K_F5,
     K_F6,
     K_F7,
@@ -68,6 +69,9 @@ def load_level():
             elif thing.type == "enemy":
                 current_level.enemy_list.add(thing)
                 globals.active_sprites.add(thing)
+            elif thing.type == "pickup":
+                current_level.pickup_list.add(thing)
+                globals.active_sprites.add(thing)
             thing_list.add(thing)
         
 def add_to_list(tile):
@@ -79,6 +83,8 @@ def add_to_list(tile):
         current_level.platform_list.add(tile)
     elif tile.type == "enemy":
         current_level.enemy_list.add(tile)
+    elif tile.type == "pickup":
+        current_level.pickup_list.add(tile)
     globals.active_sprites.add(tile)
 
 # Initialize pygame
@@ -138,13 +144,17 @@ blocklist = [things.Tan_Tile_01,
             things.Ground_Tile_03,
             things.Ground_Tile_04,
             things.Ground_Tile_05,
-            things.Ground_Tile_06,]
+            things.Ground_Tile_06,
+            ]
 
 # List of all enemies that can be placed
-enemylist = [things.Enemy_01,]
+enemylist = [things.Enemy_01,
+            ]
 
-# List of 
-misclist = []
+# List of pickups that can be placed
+pickuplist = [things.MGAmmo,
+            things.Stimpack,
+            ]
 
 # Position of the cursor on the screen
 pos = (0,0)
@@ -153,6 +163,8 @@ pos = (0,0)
 selected_block = 0
 # Which enemy from the list is selected and gets placed
 selected_enemy = 0
+# Which pickup from the list is selected and gets placed
+selected_pickup = 0
 
 selected_thing_list = blocklist
 selected_thing = selected_block
@@ -161,7 +173,7 @@ blockpreview = selected_thing_list[selected_thing]((pos[0] - cam.x), (pos[1] - c
 blockpreview.surf.set_alpha(150)
 
 # List of layers to place things in
-thing_types = ['wall', 'platform', 'bg', 'fg', 'enemy']
+thing_types = ['wall', 'platform', 'bg', 'fg', 'enemy', 'pickup']
 # Variable for determining which layer to place a tile (background, foreground, walls) or if it's an enemy or a pickup
 selected_thing_type = "wall"
 # Initialize the sprite which follows the cursor
@@ -195,29 +207,35 @@ while running:
                 if selected_thing < 0:
                     selected_thing = len(selected_thing_list) - 1
             # Set the tile to be placed as a wall
-            if event.key == K_F1:
+            if event.key == K_1:
                 selected_thing_type = "wall"
                 selected_thing_list = blocklist
                 selected_thing = selected_block
                 print("Wall")
             # Set the tile to be placed as a platform
-            if event.key == K_F2:
+            if event.key == K_2:
                 selected_thing_type = "platform"
                 selected_thing_list = blocklist
                 selected_thing = selected_block
                 print("Platform")
             # Set the tile to be placed in the background
-            if event.key == K_F3:
+            if event.key == K_3:
                 selected_thing_type = "bg"
                 selected_thing_list = blocklist
                 selected_thing = selected_block
                 print("Background")
             # Set the tile to be placed to be an enemy
-            if event.key == K_F4:
+            if event.key == K_4:
                 selected_thing_type = "enemy"
                 selected_thing_list = enemylist
                 selected_thing = selected_enemy
                 print("Enemy")
+            # Set the tile to be placed to be a pickup
+            if event.key == K_5:
+                selected_thing_type = "pickup"
+                selected_thing_list = pickuplist
+                selected_thing = selected_pickup
+                print("Pickup")
             # Save the current level into a file                    
             if event.key == K_F6:
                 save_level(thing_list)
@@ -262,6 +280,9 @@ while running:
 
     for thing in current_level.enemy_list:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+
+    for thing in current_level.pickup_list:
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
         
     screen.blit(player.surf,(player.rect.x + cam.x, player.rect.y + cam.y))
     # Blit the preview for the selected block on the cursor
@@ -284,6 +305,8 @@ while running:
             hits = pygame.sprite.spritecollide(tile, current_level.bg_list, False)
         if selected_thing_type == "enemy":
             hits = pygame.sprite.spritecollide(tile, current_level.enemy_list, False) 
+        if selected_thing_type == "pickup":
+            hits = pygame.sprite.spritecollide(tile, current_level.pickup_list, False) 
         if len(hits) == 0:
             globals.visible_sprites.add(tile)
             print(tile.name + " placed at " + str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8) + " as " + selected_thing_type)

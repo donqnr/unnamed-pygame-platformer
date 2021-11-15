@@ -330,3 +330,16 @@ class Enemy_01(Enemy_01):
         super(Enemy_01, self).__init__(pos_x,pos_y)
         self.name = "Enemy_01"
         self.type = "enemy"
+
+from scripts.pickups import MGAmmo, Stimpack
+class MGAmmo(MGAmmo):
+    def __init__(self, pos_x, pos_y):
+        super(MGAmmo, self).__init__(pos_x,pos_y)
+        self.name = "MGAmmo"
+        self.type = "pickup"
+
+class Stimpack(Stimpack):
+    def __init__(self, pos_x, pos_y):
+        super(Stimpack, self).__init__(pos_x,pos_y)
+        self.name = "Stimpack"
+        self.type = "pickup"

@@ -25,7 +25,7 @@ class HPBar(pygame.sprite.Sprite):
         self.text = self.update_counter()
 
     def update_counter(self) -> pygame.Surface:
-        return self.font.render("Health: " + str(self.player.hp), False, (255,255,255))
+        return self.font.render("Health: " + str(self.player.hp), True, (255,255,255))
 
 class AmmoBar(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -41,7 +41,7 @@ class AmmoBar(pygame.sprite.Sprite):
             ammocounter = 'INF'
         else:
             ammocounter = str(self.player.equipped_weapon.ammo)
-        self.text = self.font.render("Ammo: " + ammocounter, False, (255,255,255))
+        self.text = self.font.render("Ammo: " + ammocounter, True, (255,255,255))
 
 class WeaponName(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -53,4 +53,4 @@ class WeaponName(pygame.sprite.Sprite):
         self.rect.bottomleft = (constants.SCREEN_WIDTH - 120, constants.SCREEN_HEIGHT - 20)
 
     def update(self):
-        self.text = self.font.render(self.player.equipped_weapon.name, False, (255,255,255))
+        self.text = self.font.render(self.player.equipped_weapon.name, True, (255,255,255))

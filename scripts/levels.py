@@ -13,6 +13,7 @@ class Level():
         self.wall_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
         self.bg_list = pygame.sprite.Group()
+        self.pickup_list = pygame.sprite.Group()
         self.player_start = (0,0)
         # Set the background image for the level
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
@@ -39,12 +40,16 @@ class Level():
                 elif thing.type == "enemy":
                     self.enemy_list.add(thing)
                     globals.visible_sprites.add(thing)
+                elif thing.type == "pickup":
+                    self.pickup_list.add(thing)
+                    globals.visible_sprites.add(thing)
     
     def destroy_level(self):
         self.bg_list.empty()
         self.wall_list.empty()
         self.platform_list.empty()
         self.enemy_list.empty()
+        self.pickup_list.empty()
 
 
 
@@ -90,4 +95,11 @@ class Customlevel(Level):
         super(Level, self).__init__()
 
         self.build_level(level_file)
+
+class Level01(Level):
+    def __init__(self):
+        Level.__init__(self)
+        super(Level, self).__init__()
+
+        self.build_level('level01.json')
 
