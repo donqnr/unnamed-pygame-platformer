@@ -42,7 +42,12 @@ class MGAmmo(sprite.Sprite):
         hits = sprite.spritecollide(self, globals.player_sprites, False)
         for hit in hits:
             try:
-                hit.weapons[1].ammo += 50
-                sprite.Sprite.kill(self)
+                if hit.weapons[1].ammo < hit.weapons[1].max_ammo:
+                    hit.weapons[1].ammo += 20
+                    
+                    if hit.weapons[1].ammo > hit.weapons[1].max_ammo:
+                        hit.weapons[1].ammo = hit.weapons[1].max_ammo
+
+                    sprite.Sprite.kill(self)
             except (AttributeError, ValueError) as e:
                 print(str(e))

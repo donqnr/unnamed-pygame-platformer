@@ -9,6 +9,8 @@ from pygame.locals import (
     K_F12,
     K_1,
     K_2,
+    K_3,
+    K_4,
     KEYDOWN,
     KEYUP,
     QUIT,
@@ -16,12 +18,14 @@ from pygame.locals import (
     K_RIGHT,
 )
 
+from scripts.player import Player
+
 
 class InputHandler():
 
     def __init__(self):
         super(InputHandler, self).__init__()
-        self.player = None
+        self.player: Player = None
 
     def CheckInput(self):
 
@@ -65,9 +69,13 @@ class InputHandler():
                         if event.key == pygame.K_LCTRL:
                             self.player.shoot()     
                         if event.key == pygame.K_1:    
-                            self.player.equipped_weapon = self.player.weapons[0]    
+                            self.player.change_weapon(1)
                         if event.key == pygame.K_2:
-                            self.player.equipped_weapon = self.player.weapons[1]  
+                            self.player.change_weapon(2)
+                        if event.key == pygame.K_3:
+                            self.player.change_weapon(3)
+                        if event.key == pygame.K_4:
+                            self.player.change_weapon(4)
                     except AttributeError:
                         print("ERROR: Player not set properly in the input handler")
             if not globals.paused:

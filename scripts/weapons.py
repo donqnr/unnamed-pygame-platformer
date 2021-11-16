@@ -1,5 +1,5 @@
 import pygame
-from scripts.projectiles import MGShot, PlasmaRifleShot
+from scripts.projectiles import MGShot, PlasmaRifleShot, Projectile
 from scripts import globals
 from random import random
 # 
@@ -7,11 +7,11 @@ from random import random
 class Weapon():
     def __init__(self):
         # Speed of the projectile in x axis, then y axis
-        self.projectile_speed = [0.0,0.0]
+        self.projectile_speed: tuple = [0.0,0.0]
         # The projectile class the weapon fires
-        self.projectile = PlasmaRifleShot
+        self.projectile: Projectile = PlasmaRifleShot
         # Is the weapon automatic and keeps firing when the trigger is held down?
-        self.auto = False
+        self.auto: bool = False
         # Amount of ammo left in the weapon
         self.ammo = 1
         # How much ammo the weapon takes per shot
@@ -88,9 +88,10 @@ class MachineGun(Weapon):
         self.projectile_speed = [10.5,0]
         self.auto = True
         self.firerate = 3
-        self.ammo = 200
+        self.ammo = 0
+        self.max_ammo = 100
         self.ammo_consumption = 1
-        self.bullet_spread = 0.4
+        self.bullet_spread = 0.5
         self.name = "Machine Gun"
 
 class MuzzleFlash(pygame.sprite.Sprite):

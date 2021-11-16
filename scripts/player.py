@@ -2,7 +2,7 @@ import pygame
 import math
 
 from scripts import globals, spritesheet, fx
-from scripts.weapons import MachineGun, PlasmaRifle
+from scripts.weapons import MachineGun, PlasmaRifle, Weapon
 
 from pygame.locals import (
     KEYDOWN,
@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         # Load the sprite sheet for the player character
         self.spritesheet = spritesheet.SpriteSheet("assets/sprites/player.png", 1)
         # Set the direction the player will be facing
-        self.direction = 'r'
+        self.direction: str = 'r'
         # Set up arrays for the sprites used for the running animations
         self.run_right = [self.spritesheet.get_image(10,60, 16,17),
                         self.spritesheet.get_image(46,60, 16,17),
@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
                         self.spritesheet.get_image(262,86, 16,17),]
 
         # Variable to count the frames when a movement button is being held down
-        self.run_duration = 0
+        self.run_duration: int = 0
 
         # Initialize the image used for the player's sprite
         self.surf = self.spritesheet.get_image(10,8, 16, 17)
@@ -59,13 +59,15 @@ class Player(pygame.sprite.Sprite):
         self.change_y = 0
 
         # List of weapons
-        self.weapons = [PlasmaRifle(),
+        self.weapons: Weapon = [PlasmaRifle(),
                         MachineGun()]
+
+        # Set the weapon's owner to the player
         for wpn in self.weapons:
             wpn.owner = self
 
         # Currently equipped weapon
-        self.equipped_weapon = self.weapons[0]
+        self.equipped_weapon: Weapon = self.weapons[0]
 
         # Initialize class that's used to check if the player is on ground
         self.groundcheck = GroundCheck(self.rect.width)
@@ -231,6 +233,8 @@ class Player(pygame.sprite.Sprite):
     def stopshoot(self):
         if self.equipped_weapon != None:
             self.equipped_weapon.triggerup()
+        if self.equipped_weapon.ammo < 1:
+            self.equipped_weapon = self.weapons[0]
         
     # Jumping function
     def jump(self):
@@ -250,25 +254,29 @@ class Player(pygame.sprite.Sprite):
 
         return False
 
+
+    # Function for player's death state
     def death(self):
         globals.visible_sprites.remove(self)
-
         deathfx = fx.PlayerDeath(self.rect.centerx, self.rect.centery)
         globals.visible_sprites.add(deathfx)
         globals.active_sprites.add(deathfx)
         self.state = "deathloop"
 
+    # Function for a looping state that's called right after the death state
     def deathloop(self):
         self.respawn_time -= 1
         if self.respawn_time <= 0:
             self.respawn()
 
-    def is_dead(self):
+    # Function to check if the player's dead
+    def is_dead(self) -> bool:
         if self.hp < 1:
             return True
 
         return False
 
+    # Function to handle taking damage
     def takedamage(self, dmg):
         if not self.is_dead():
             if not self.invul_time > 0 and self.hp > 0:
@@ -277,9 +285,11 @@ class Player(pygame.sprite.Sprite):
             if self.hp <= 0:
                 self.state = "death"
 
+    # Function for making the player move without the player's input
     def push(self, x, y):
         pass
 
+    # Function for respawning after the player dies
     def respawn(self):
         self.state = "normal"
         self.rect.topleft = globals.current_level.player_start
@@ -287,10 +297,19 @@ class Player(pygame.sprite.Sprite):
         self.hp = self.maxhp
         self.respawn_time = 120
 
+    # Function for healing the player
     def heal(self, amount):
         self.hp += amount
         if self.hp > self.maxhp:
             self.hp = self.maxhp
+    
+    # Function to handle changing weapons
+    def change_weapon(self, num):
+        try:
+            if self.weapons[num - 1].ammo > 0:
+                self.equipped_weapon = self.weapons[num - 1]
+        except IndexError:
+            print("No weapon at slot " + str(num))
 
         
         
