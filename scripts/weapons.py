@@ -1,5 +1,5 @@
 import pygame
-from scripts.projectiles import MGShot, PlasmaRifleShot, Projectile
+from scripts.projectiles import MGShot, PlasmaRifleShot, Projectile, RocketShot
 from scripts import globals
 from random import random
 # 
@@ -31,6 +31,9 @@ class Weapon():
         
     # Update the weapon based on its state
     def update(self):
+        print(str(self.fireratecooldown))
+        if self.fireratecooldown > 0:
+            self.fireratecooldown -= 1
         # If weapon is unequipped, do nothing
         if not self.state == 'unequipped':
             # Ready state is when the weapon is ready to fire
@@ -39,9 +42,7 @@ class Weapon():
             # Firing state calls the fire function, if enough time has passed when it was last fired
             elif self.state == 'firing' and self.fireratecooldown < 1:
                 self.fire()
-            # Otherwise lower the cooldown variable, until it's 0
-            else:
-                self.fireratecooldown -= 1
+                
 
     # When player holds down the trigger, change to firing state
     def triggerdown(self):
@@ -93,6 +94,22 @@ class MachineGun(Weapon):
         self.ammo_consumption = 1
         self.bullet_spread = 0.5
         self.name = "Machine Gun"
+
+# Rocket Launcher
+
+class RocketLauncher(Weapon):
+    def __init__(self, flip: bool = False):
+        super().__init__()
+        Weapon.__init__(self)
+        self.projectile = RocketShot
+        self.projectile_speed = [2,0]
+        self.auto = False
+        self.firerate = 30
+        self.ammo = 10
+        self.max_ammo = 20
+        self.ammo_consumption = 1
+        self.bullet_spread = 0
+        self.name = "Rocket Launcher"
 
 class MuzzleFlash(pygame.sprite.Sprite):
     def __init__(self, owner):

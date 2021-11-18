@@ -1,5 +1,5 @@
 from pygame import sprite
-from scripts import levels
+from scripts import levels, ui
 
 active_sprites = sprite.Group() # Sprites that are updated each frame (Player, enemies)
 visible_sprites = sprite.Group() # Group to handle the visibility of a sprite
@@ -8,6 +8,8 @@ player_sprites = sprite.Group() # Group for handling hit of a player
 bg_sprites = sprite.Group() # Group for background blocks, to be blitted before other elements of the level
 
 current_level = None # Currently loaded level
+
+hud = ui.Hud()
 
 paused: bool = False # Boolean to handle pausing
 running: bool = True # Boolean to keep the main loop running

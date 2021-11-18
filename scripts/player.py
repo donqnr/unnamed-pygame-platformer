@@ -2,7 +2,7 @@ import pygame
 import math
 
 from scripts import globals, spritesheet, fx
-from scripts.weapons import MachineGun, PlasmaRifle, Weapon
+from scripts.weapons import MachineGun, PlasmaRifle, RocketLauncher, Weapon
 
 from pygame.locals import (
     KEYDOWN,
@@ -60,7 +60,8 @@ class Player(pygame.sprite.Sprite):
 
         # List of weapons
         self.weapons: Weapon = [PlasmaRifle(),
-                        MachineGun()]
+                        MachineGun(),
+                        RocketLauncher()]
 
         # Set the weapon's owner to the player
         for wpn in self.weapons:

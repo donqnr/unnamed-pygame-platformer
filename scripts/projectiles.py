@@ -1,6 +1,6 @@
 import pygame
-from scripts.fx import PlasmaShotDeath, MGShotDeath
-from scripts import globals, spritesheet
+from scripts.fx import Effect, PlasmaShotDeath, MGShotDeath, BigExplosion
+from scripts import globals, spritesheet, enemies
 import math
 
 class Projectile(pygame.sprite.Sprite):
@@ -12,18 +12,20 @@ class Projectile(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
-        self.speed_x = speed_x
-        self.speed_y = speed_y
-        self.damage = 8
-        self.lifespan = 45
-        self.lifetime = 0
-        self.state = "spawn"
+        self.speed_x: float = speed_x
+        self.speed_y: float = speed_y
+        self.acceleration: float = 0
+        self.damage: int = 8
+        self.lifespan: int = 45
+        self.lifetime: int = 0
+        self.state: str = "spawn"
+        self.explosive: bool = False
         globals.active_sprites.add(self)
         globals.visible_sprites.add(self)
-        self.deathanimtime = 0
-        self.deathanim = PlasmaShotDeath
-        self.asd = [0,0]
-        self.knockback = 1
+        self.deathanimtime: int = 0
+        self.deathanim: Effect = PlasmaShotDeath
+        self.asd: tuple = [0,0]
+        self.knockback: float = 1
 
     def update(self):
         if self.state == "spawn":
@@ -36,12 +38,22 @@ class Projectile(pygame.sprite.Sprite):
             pygame.sprite.Sprite.kill(self)
 
     def predeath(self):
-        self.state = "death"
-
-    def death(self):
         deathfx = self.deathanim(self.rect.centerx, self.rect.centery)
         globals.visible_sprites.add(deathfx)
         globals.active_sprites.add(deathfx)
+        if self.explosive:
+            self.blast_damage()
+        self.state = "death"
+
+    def blast_damage(self):
+        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False, pygame.sprite.collide_circle_ratio(8))
+        for hit in hits:
+            try:
+                hit.takedamage(self.damage)
+            except AttributeError:
+                pass
+
+    def death(self):
         pygame.sprite.Sprite.kill(self)
 
         """ if self.deathanimtime // 4 >= len(self.deathanim):
@@ -85,6 +97,12 @@ class Projectile(pygame.sprite.Sprite):
                 pass
             self.state = "predeath"
 
+        if self.speed_x < 0:
+            self.speed_x -= self.acceleration
+        if self.speed_x > 0:
+            self.speed_x += self.acceleration
+        
+
 class PlasmaRifleShot(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y):
         super(Projectile, self).__init__()
@@ -107,4 +125,20 @@ class MGShot(Projectile):
         self.rect.y = pos_y + 3
         self.deathanim = MGShotDeath
         self.knockback = 0.7
+
+class RocketShot(Projectile):
+    def __init__(self, pos_x, pos_y, speed_x, speed_y):
+        super(Projectile, self).__init__()
+        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y)
+        self.damage = 16
+        self.explosive = True
+        self.surf = self.sheet.get_image(1,34,9,6)
+        self.rect = self.surf.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
+        self.knockback = 5
+        self.acceleration = 0.25
+        self.deathanim = BigExplosion
+
+
         

@@ -1,5 +1,15 @@
 import pygame
-from scripts import globals, input, constants, player, ui, cam, levels
+from scripts import constants
+
+# Initialize pygame
+pygame.init()
+
+# Create the screen object
+# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
+screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
+
+from scripts import globals, input, player, ui, cam, levels
 
 # Function to check if a sprite is near or in the viewport
 def is_onscreen(thing):
@@ -14,14 +24,6 @@ def initplayer():
     p = player.Player(globals.current_level.player_start[0],globals.current_level.player_start[1])
     return p
 
-# Initialize pygame
-pygame.init()
-
-# Create the screen object
-# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
-screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
-
 # Set the level to load
 globals.current_level = levels.Level01()
 
@@ -29,7 +31,7 @@ globals.current_level = levels.Level01()
 p1: player.Player = initplayer()
 
 # Initialize the HUD
-hud = ui.Hud(p1)
+globals.hud.set_player(p1)
 
 globals.active_sprites.add(globals.current_level.enemy_list)
 
@@ -75,6 +77,7 @@ while globals.running:
     if not globals.paused:
         globals.player_sprites.update()
         globals.active_sprites.update()
+        
 
     # Draw visible sprites, in relation to the camera's position.
     for thing in globals.visible_sprites:
@@ -82,11 +85,12 @@ while globals.running:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
     if not globals.hide_hud:
-        screen.blit(hud.hp.text, (hud.hp.rect.x,hud.hp.rect.y))
-        screen.blit(hud.ammo.text, (hud.ammo.rect.x,hud.ammo.rect.y))
-        screen.blit(hud.wpn.text, (hud.wpn.rect.x,hud.wpn.rect.y))
+        screen.blit(globals.hud.hp.text, (globals.hud.hp.rect.x,globals.hud.hp.rect.y))
+        screen.blit(globals.hud.ammo.text, (globals.hud.ammo.rect.x,globals.hud.ammo.rect.y))
+        screen.blit(globals.hud.wpn.text, (globals.hud.wpn.rect.x,globals.hud.wpn.rect.y))
+        screen.blit(globals.hud.msg.text, (globals.hud.msg.rect.x,globals.hud.msg.rect.y))
 
-    hud.update()
+    globals.hud.update()
 
     inp.CheckInput()
 

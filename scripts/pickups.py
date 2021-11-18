@@ -11,6 +11,7 @@ class Stimpack(sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
+        self.message = "+20 Health"
         globals.active_sprites.add(self)
         globals.visible_sprites.add(self)
 
@@ -19,7 +20,8 @@ class Stimpack(sprite.Sprite):
         for hit in hits:
             try:
                 if hit.hp < hit.maxhp:
-                    hit.heal(15)
+                    hit.heal(20)
+                    globals.hud.msg.show_message(self.message)
                     sprite.Sprite.kill(self)
                 else:
                     pass
@@ -35,6 +37,7 @@ class MGAmmo(sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
+        self.message = "Machine Gun Rounds"
         globals.active_sprites.add(self)
         globals.visible_sprites.add(self)
         
@@ -48,6 +51,7 @@ class MGAmmo(sprite.Sprite):
                     if hit.weapons[1].ammo > hit.weapons[1].max_ammo:
                         hit.weapons[1].ammo = hit.weapons[1].max_ammo
 
+                    globals.hud.msg.show_message(self.message)
                     sprite.Sprite.kill(self)
             except (AttributeError, ValueError) as e:
                 print(str(e))
