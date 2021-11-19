@@ -9,8 +9,8 @@ class Effect(pygame.sprite.Sprite):
         self.anim = [self.sheet.get_image(0,0,1,1),
         ]
         self.surf = self.anim[0]
-        self.duration = 0
-        self.anim_speed = 4
+        self.duration: int = 0
+        self.anim_speed: int = 4
 
     def update(self):
         if self.duration // self.anim_speed >= len(self.anim):
