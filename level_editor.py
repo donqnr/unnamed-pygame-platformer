@@ -1,7 +1,18 @@
 import pygame
+from scripts import constants
+# Initialize pygame
+pygame.init()
+
+#
+
+# Create the screen object
+# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
+screen = pygame.display.set_mode((constants.EDITOR_SCREEN_WIDTH, constants.EDITOR_SCREEN_HEIGHT), flags)
+
 import json
 
-from scripts import globals, constants, player, levels, cam, things
+from scripts import globals, player, levels, cam, things
 from pygame.locals import (
     K_ESCAPE,
     K_w,
@@ -87,15 +98,7 @@ def add_to_list(tile):
         current_level.pickup_list.add(tile)
     globals.active_sprites.add(tile)
 
-# Initialize pygame
-pygame.init()
 
-#
-
-# Create the screen object
-# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
-screen = pygame.display.set_mode((constants.EDITOR_SCREEN_WIDTH, constants.EDITOR_SCREEN_HEIGHT), flags)
 
 
 # Place the player class to indicate where the player start's going to be
@@ -154,6 +157,7 @@ enemylist = [things.Enemy_01,
 # List of pickups that can be placed
 pickuplist = [things.MGAmmo,
             things.Stimpack,
+            things.RocketAmmo,
             ]
 
 # Position of the cursor on the screen

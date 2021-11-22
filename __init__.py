@@ -9,7 +9,7 @@ pygame.init()
 flags = pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF
 screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT), flags)
 
-from scripts import globals, input, player, ui, cam, levels
+from scripts import globals, input, player, cam, levels
 
 # Function to check if a sprite is near or in the viewport
 def is_onscreen(thing):
@@ -18,7 +18,6 @@ def is_onscreen(thing):
         return True
 
     return False
-
 
 def initplayer():
     p = player.Player(globals.current_level.player_start[0],globals.current_level.player_start[1])

@@ -31,7 +31,6 @@ class Weapon():
         
     # Update the weapon based on its state
     def update(self):
-        print(str(self.fireratecooldown))
         if self.fireratecooldown > 0:
             self.fireratecooldown -= 1
         # If weapon is unequipped, do nothing
@@ -62,7 +61,7 @@ class Weapon():
             else:
                 shotx = self.owner.rect.right - 6
                 shotspeed = self.projectile_speed[0]
-            proj = self.projectile(shotx,self.owner.rect.centery - 2,shotspeed,self.projectile_speed[1] + (self.bullet_spread * (random() - random()))) # Spawn the projectile
+            proj = self.projectile(shotx,self.owner.rect.centery - 2,shotspeed,self.projectile_speed[1] + (self.bullet_spread * (random() - random())), self.owner.direction) # Spawn the projectile
             self.ammo -= self.ammo_consumption # Subtract ammo by the specified amount
             self.fireratecooldown = self.firerate # Add a cooldown before the weapon can be fired again
             if not self.auto: # If the weapon isn't automatic, set state to ready regardless if the trigger is held down
@@ -105,7 +104,7 @@ class RocketLauncher(Weapon):
         self.projectile_speed = [2,0]
         self.auto = False
         self.firerate = 30
-        self.ammo = 10
+        self.ammo = 0
         self.max_ammo = 20
         self.ammo_consumption = 1
         self.bullet_spread = 0

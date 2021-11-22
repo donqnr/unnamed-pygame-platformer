@@ -4,7 +4,7 @@ from scripts import globals, spritesheet, enemies
 import math
 
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, speed_x, speed_y):
+    def __init__(self, pos_x, pos_y, speed_x, speed_y, direction = 'r'):
         super(Projectile, self).__init__()
         pygame.sprite.Sprite.__init__(self)
         self.sheet = spritesheet.SpriteSheet("assets/sprites/projectiles.png", 1)
@@ -26,6 +26,7 @@ class Projectile(pygame.sprite.Sprite):
         self.deathanim: Effect = PlasmaShotDeath
         self.asd: tuple = [0,0]
         self.knockback: float = 1
+        self.direction = direction
 
     def update(self):
         if self.state == "spawn":
@@ -46,12 +47,16 @@ class Projectile(pygame.sprite.Sprite):
         self.state = "death"
 
     def blast_damage(self):
-        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False, pygame.sprite.collide_circle_ratio(8))
+        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False, pygame.sprite.collide_circle_ratio(3))
         for hit in hits:
             try:
                 hit.takedamage(self.damage)
-            except AttributeError:
-                pass
+                if hit.rect.centerx > self.rect.centerx:
+                    hit.change_x += self.knockback
+                if hit.rect.centerx < self.rect.centerx:
+                    hit.change_x -= self.knockback
+            except AttributeError as e:
+                print(e)
 
     def death(self):
         pygame.sprite.Sprite.kill(self)
@@ -104,9 +109,9 @@ class Projectile(pygame.sprite.Sprite):
         
 
 class PlasmaRifleShot(Projectile):
-    def __init__(self, pos_x, pos_y, speed_x, speed_y):
+    def __init__(self, pos_x, pos_y, speed_x, speed_y, direction = 'r'):
         super(Projectile, self).__init__()
-        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y)
+        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y, direction)
         self.damage = 5
         self.surf = self.sheet.get_image(2,2,6,6)
         self.rect = self.surf.get_rect()
@@ -115,10 +120,10 @@ class PlasmaRifleShot(Projectile):
         self.knockback = 2.5
 
 class MGShot(Projectile):
-    def __init__(self, pos_x, pos_y, speed_x, speed_y):
+    def __init__(self, pos_x, pos_y, speed_x, speed_y, direction):
         super(Projectile, self).__init__()
-        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y)
-        self.damage = 3
+        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y, direction)
+        self.damage = 2
         self.surf = self.sheet.get_image(1,24,4,2)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
@@ -127,9 +132,9 @@ class MGShot(Projectile):
         self.knockback = 0.7
 
 class RocketShot(Projectile):
-    def __init__(self, pos_x, pos_y, speed_x, speed_y):
+    def __init__(self, pos_x, pos_y, speed_x, speed_y, direction = 'r'):
         super(Projectile, self).__init__()
-        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y)
+        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y, direction)
         self.damage = 16
         self.explosive = True
         self.surf = self.sheet.get_image(1,34,9,6)
@@ -139,6 +144,6 @@ class RocketShot(Projectile):
         self.knockback = 5
         self.acceleration = 0.25
         self.deathanim = BigExplosion
-
-
-        
+        self.direction = direction
+        if self.direction == 'l':
+            self.surf = pygame.transform.flip(self.surf,True,False)

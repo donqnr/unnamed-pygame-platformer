@@ -75,12 +75,12 @@ class WeaponName(pygame.sprite.Sprite):
 class Message(pygame.sprite.Sprite):
     def __init__(self):
         self.font = pygame.font.Font("assets/fonts/BULKYPIX.TTF", 12)
-        self.text = self.font.render("test", False, (255,255,255))
+        self.text = self.font.render("", False, (255,255,255))
         self.rect = self.text.get_rect()
         self.text.set_colorkey((0,0,0))
         self.rect.bottomleft = (16, 16)
         self.message_duration = 120
-        self.message_counter = 0
+        self.message_counter = 120
 
     def show_message(self, message: str):
         self.text = self.font.render(message, False, (255,255,255))
