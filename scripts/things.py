@@ -324,11 +324,17 @@ class Ground_Tile_06(platforms.Wall):
         self.rect.move_ip(pos_x,pos_y)
         self.type = "wall"
 
-from scripts.enemies import Enemy_01
+from scripts.enemies import Enemy_01, GrenadeEnemy
 class Enemy_01(Enemy_01):
     def __init__(self, pos_x, pos_y):
         super(Enemy_01, self).__init__(pos_x,pos_y)
         self.name = "Enemy_01"
+        self.type = "enemy"
+
+class GrenadeEnemy(GrenadeEnemy):
+    def __init__(self, pos_x, pos_y):
+        super(GrenadeEnemy, self).__init__(pos_x,pos_y)
+        self.name = "GrenadeEnemy"
         self.type = "enemy"
 
 from scripts.pickups import MGAmmo, Stimpack, RocketAmmo

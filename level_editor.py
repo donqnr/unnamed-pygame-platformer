@@ -152,6 +152,7 @@ blocklist = [things.Tan_Tile_01,
 
 # List of all enemies that can be placed
 enemylist = [things.Enemy_01,
+            things.GrenadeEnemy,
             ]
 
 # List of pickups that can be placed

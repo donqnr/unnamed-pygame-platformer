@@ -27,6 +27,9 @@ class Projectile(pygame.sprite.Sprite):
         self.asd: tuple = [0,0]
         self.knockback: float = 1
         self.direction = direction
+        self.damage_enemies: bool = True
+        self.damage_player: bool = False
+        self.gravity: float = 0.0
 
     def update(self):
         if self.state == "spawn":
@@ -47,7 +50,8 @@ class Projectile(pygame.sprite.Sprite):
         self.state = "death"
 
     def blast_damage(self):
-        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False, pygame.sprite.collide_circle_ratio(3))
+        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False, pygame.sprite.collide_circle_ratio(1.5))
+        hits += pygame.sprite.spritecollide(self, globals.player_sprites, False, pygame.sprite.collide_circle_ratio(1.5))
         for hit in hits:
             try:
                 hit.takedamage(self.damage)
@@ -84,18 +88,16 @@ class Projectile(pygame.sprite.Sprite):
         self.lifetime += 1
         if self.lifetime >= self.lifespan:
             self.state = "predeath"
-        
-        hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
-        if hits:
-            self.state = "predeath"
+
+        self.wallhit()
 
         hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
         if hits:
             try:
                 if self.speed_x < 0:
-                    hits[0].change_x -= self.knockback
+                    hits[0].change_x -= self.knockback * hits[0].knockback_mult
                 if self.speed_x > 0:
-                    hits[0].change_x += self.knockback
+                    hits[0].change_x += self.knockback * hits[0].knockback_mult
                 hits[0].takedamage(self.damage)
 
             except AttributeError:
@@ -106,6 +108,16 @@ class Projectile(pygame.sprite.Sprite):
             self.speed_x -= self.acceleration
         if self.speed_x > 0:
             self.speed_x += self.acceleration
+
+        self.speed_y += self.gravity
+
+    def wallhit(self):
+        hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
+        if hits:
+            self.state = "predeath"
+
+    def bounce(self):
+        pass
         
 
 class PlasmaRifleShot(Projectile):
@@ -117,7 +129,7 @@ class PlasmaRifleShot(Projectile):
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
-        self.knockback = 2.5
+        self.knockback = 1.5
 
 class MGShot(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y, direction):
@@ -129,7 +141,7 @@ class MGShot(Projectile):
         self.rect.x = pos_x
         self.rect.y = pos_y + 3
         self.deathanim = MGShotDeath
-        self.knockback = 0.7
+        self.knockback = 0.5
 
 class RocketShot(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y, direction = 'r'):
@@ -141,9 +153,35 @@ class RocketShot(Projectile):
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
-        self.knockback = 5
+        self.knockback = 3
         self.acceleration = 0.25
         self.deathanim = BigExplosion
         self.direction = direction
         if self.direction == 'l':
             self.surf = pygame.transform.flip(self.surf,True,False)
+
+class Grenade(Projectile):
+    def __init__(self, pos_x, pos_y, speed_x, speed_y, direction):
+        super(Projectile, self).__init__()
+        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y, direction)
+        self.damage = 16
+        self.explosive = True
+        self.surf = self.sheet.get_image(2,52,8,8)
+        self.rect = self.surf.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
+        self.knockback = 3
+        self.acceleration = -0.05
+        self.deathanim = BigExplosion
+        self.gravity = 0.1
+
+class EnemyGrenade(Grenade):
+    def __init__(self, pos_x, pos_y, speed_x, speed_y, direction):
+        super(Projectile, self).__init__()
+        Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y, direction)
+        self.surf = self.sheet.get_image(2,42,8,8)
+        self.rect = self.surf.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
+        self.damage_player = True
+        self.damage_enemies = False
