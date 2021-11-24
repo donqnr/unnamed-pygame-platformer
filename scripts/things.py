@@ -337,7 +337,7 @@ class GrenadeEnemy(GrenadeEnemy):
         self.name = "GrenadeEnemy"
         self.type = "enemy"
 
-from scripts.pickups import MGAmmo, Stimpack, RocketAmmo
+from scripts.pickups import MGAmmo, Stimpack, RocketAmmo, GrenadeAmmo
 class MGAmmo(MGAmmo):
     def __init__(self, pos_x, pos_y):
         super(MGAmmo, self).__init__(pos_x,pos_y)
@@ -354,4 +354,10 @@ class RocketAmmo(RocketAmmo):
     def __init__(self, pos_x, pos_y):
         super(RocketAmmo, self).__init__(pos_x,pos_y)
         self.name = "RocketAmmo"
+        self.type = "pickup"
+
+class GrenadeAmmo(GrenadeAmmo):
+    def __init__(self, pos_x, pos_y):
+        super(GrenadeAmmo, self).__init__(pos_x,pos_y)
+        self.name = "GrenadeAmmo"
         self.type = "pickup"

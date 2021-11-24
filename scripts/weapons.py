@@ -53,7 +53,7 @@ class Weapon():
 
     # Function to handle projectile spawning and such when the weapon fires
     def fire(self):
-        if self.ammo > 0:
+        if self.ammo > 0: # Check for ammo before firing
             self.mflash.flash(2) # Call the muzzleflash to appear
             if self.owner.direction == 'l': # Set the projectile speed depending on the player's direction
                 shotx = self.owner.rect.left
@@ -115,7 +115,7 @@ class GrenadeLauncher(Weapon):
         super().__init__()
         Weapon.__init__(self)
         self.projectile = Grenade
-        self.projectile_speed = [6,-1]
+        self.projectile_speed = [4,-1.25]
         self.auto = False
         self.firerate = 30
         self.ammo = 20

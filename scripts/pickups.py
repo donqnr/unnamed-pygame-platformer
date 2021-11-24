@@ -94,3 +94,28 @@ class RocketAmmo(Pickup):
 
         except (AttributeError, ValueError) as e:
             print(str(e))
+
+class GrenadeAmmo(Pickup):
+    def __init__(self, pos_x, pos_y):
+        super(Pickup, self).__init__()
+        sprite.Sprite.__init__(self)
+        Pickup.__init__(self,pos_x,pos_y)
+        self.surf = self.sheet.get_image(31,19,14,8)
+        self.rect = self.surf.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
+        self.message = "Grenades +2"
+
+    def do_effect(self, hit):
+        try:
+            if hit.weapons[3].ammo < hit.weapons[3].max_ammo:
+                hit.weapons[3].ammo += 2
+                    
+                if hit.weapons[3].ammo > hit.weapons[3].max_ammo:
+                    hit.weapons[3].ammo = hit.weapons[3].max_ammo
+
+                globals.hud.msg.show_message(self.message)
+                sprite.Sprite.kill(self)
+
+        except (AttributeError, ValueError) as e:
+            print(str(e))

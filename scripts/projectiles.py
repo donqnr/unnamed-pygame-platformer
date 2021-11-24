@@ -1,4 +1,5 @@
 import pygame
+from pygame.surface import Surface
 from scripts.fx import Effect, PlasmaShotDeath, MGShotDeath, BigExplosion
 from scripts import globals, spritesheet, enemies
 import math
@@ -30,8 +31,20 @@ class Projectile(pygame.sprite.Sprite):
         self.damage_enemies: bool = True
         self.damage_player: bool = False
         self.gravity: float = 0.0
+        self.bouncy: bool = False
+        self.frames: list[Surface] = [self.sheet.get_image(1,1,8,8)]
+        self.anim_speed: int = 3
+        self.anim_duration: int = 0
 
     def update(self):
+
+        if self.anim_duration // self.anim_speed >= len(self.frames):
+            self.anim_duration = 0
+
+        if self.anim_duration // self.anim_speed < len(self.frames):
+            self.surf = self.frames[self.anim_duration // self.anim_speed]
+            self.anim_duration += 1
+
         if self.state == "spawn":
             self.spawn()
         elif self.state == "death":
@@ -89,7 +102,10 @@ class Projectile(pygame.sprite.Sprite):
         if self.lifetime >= self.lifespan:
             self.state = "predeath"
 
-        self.wallhit()
+        if self.bouncy:
+            self.bounce()
+        else:
+            self.wallhit()
 
         hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
         if hits:
@@ -117,7 +133,60 @@ class Projectile(pygame.sprite.Sprite):
             self.state = "predeath"
 
     def bounce(self):
-        pass
+        trhit: bool = False
+        tlhit: bool = False
+        brhit: bool = False
+        blhit: bool = False
+        hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
+        for hit in hits:
+            if self.speed_x > 0:
+                self.rect.right = hit.rect.left
+                self.speed_x -= self.speed_x * (2)
+            if self.speed_x < 0:
+                self.rect.left = hit.rect.right
+                self.speed_x -= self.speed_x * (2)
+
+        hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
+        for hit in hits:
+            if self.speed_y > 0:
+                self.rect.bottom = hit.rect.top
+                self.speed_y -= self.speed_y * (2)
+            if self.speed_y < 0:
+                self.rect.top = hit.rect.bottom
+                self.speed_y -= self.speed_y * (2)
+                
+            self.speed_x *= 0.8
+            self.speed_y *= 0.9
+
+        """ hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
+        for hit in hits:
+            if pygame.Rect.collidepoint(hit.rect,self.rect.topright):
+                trhit = True
+            if pygame.Rect.collidepoint(hit.rect,self.rect.topleft):
+                tlhit = True
+            if pygame.Rect.collidepoint(hit.rect,self.rect.bottomright):
+                brhit = True
+            if pygame.Rect.collidepoint(hit.rect,self.rect.bottomleft):
+                blhit = True
+
+            if trhit and brhit and self.speed_x > 0:
+                self.rect.right = hits[0].rect.left
+                self.speed_x -= self.speed_x * (2)
+            if tlhit and blhit and self.speed_x < 0:
+                self.rect.left = hits[0].rect.right
+                self.speed_x -= self.speed_x * (2)
+            if blhit and brhit:
+                self.rect.bottom = hits[0].rect.top
+                self.speed_y -= self.speed_y * (2)
+            if tlhit and trhit:
+                self.rect.top = hits[0].rect.bottom
+                self.speed_y -= self.speed_y * (2) """
+
+
+            
+            #self.speed_y -= self.speed_y * (2 * 0.9)
+            #self.speed_x -= self.speed_x * (2 * 0.9)
+            
         
 
 class PlasmaRifleShot(Projectile):
@@ -130,6 +199,7 @@ class PlasmaRifleShot(Projectile):
         self.rect.x = pos_x
         self.rect.y = pos_y
         self.knockback = 1.5
+        self.frames: list[Surface] = [self.sheet.get_image(2,2,6,6)]
 
 class MGShot(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y, direction):
@@ -142,6 +212,7 @@ class MGShot(Projectile):
         self.rect.y = pos_y + 3
         self.deathanim = MGShotDeath
         self.knockback = 0.5
+        self.frames: list[Surface] = [self.sheet.get_image(1,24,4,2)]
 
 class RocketShot(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y, direction = 'r'):
@@ -157,6 +228,7 @@ class RocketShot(Projectile):
         self.acceleration = 0.25
         self.deathanim = BigExplosion
         self.direction = direction
+        self.frames: list[Surface] = [self.sheet.get_image(1,34,9,6)]
         if self.direction == 'l':
             self.surf = pygame.transform.flip(self.surf,True,False)
 
@@ -171,9 +243,15 @@ class Grenade(Projectile):
         self.rect.x = pos_x
         self.rect.y = pos_y
         self.knockback = 3
-        self.acceleration = -0.05
+        self.acceleration = -0.01
         self.deathanim = BigExplosion
         self.gravity = 0.1
+        self.bouncy = True
+        self.lifespan = 120
+        self.frames: list[Surface] = [self.sheet.get_image(1,52,9,9),
+                                    self.sheet.get_image(13,52,9,9),
+                                    self.sheet.get_image(25,52,9,9),
+                                    self.sheet.get_image(38,52,9,9),]
 
 class EnemyGrenade(Grenade):
     def __init__(self, pos_x, pos_y, speed_x, speed_y, direction):
@@ -185,3 +263,4 @@ class EnemyGrenade(Grenade):
         self.rect.y = pos_y
         self.damage_player = True
         self.damage_enemies = False
+        self.frames: list[Surface] = [self.sheet.get_image(2,42,8,8)]
