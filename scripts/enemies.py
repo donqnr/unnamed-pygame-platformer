@@ -2,6 +2,8 @@ import pygame
 from scripts import globals, spritesheet
 import math
 
+from scripts.projectiles import EnemyGrenade
+
 # A lot of code copied from the player class, could refactor these and have them be a child of a more general character class
 
 class Enemy(pygame.sprite.Sprite):
@@ -197,6 +199,7 @@ class Enemy_01(Enemy):
                 pass
         
 class GrenadeEnemy(Enemy):
+    from scripts.projectiles import EnemyGrenade
     def __init__(self, pos_x, pos_y):
         super(Enemy, self).__init__()
         pygame.sprite.Sprite.__init__(self)
@@ -232,14 +235,17 @@ class GrenadeEnemy(Enemy):
         self.fall()
         self.collision_detection()
 
+        if self.fire_cd_counter > 0:
+            self.fire_cd_counter -= 1
+
         if self.state == "normal":
             self.wait()
         elif self.state == "death":
             self.death()
         elif self.state == "chase":
             self.chase()
-        elif self.state == "fire":
-            self.fire()
+        elif self.state == "attack":
+            self.attack()
                    
     def wait(self):
         self.change_x = 0
@@ -271,8 +277,16 @@ class GrenadeEnemy(Enemy):
                 else:
                     self.change_x = self.max_speed
 
+        if pygame.sprite.spritecollide(self, globals.player_sprites, False, pygame.sprite.collide_circle_ratio(7)) and self.fire_cd_counter <= 0:
+            self.state = "attack"
+
         self.move()
 
-    def fire(self):
-        pass
+    def attack(self):
+        if self.direction == 'r':
+            proj = EnemyGrenade(self.rect.centerx, self.rect.centery, 2, -1.5, self.direction)
+        elif self.direction == 'l':
+            proj = EnemyGrenade(self.rect.centerx, self.rect.centery, -2, -1.5, self.direction)
+        self.fire_cd_counter = self.fire_cooldown
+        self.state = "chase"
 

@@ -107,7 +107,12 @@ class Projectile(pygame.sprite.Sprite):
         else:
             self.wallhit()
 
-        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
+        hits = []
+        if self.damage_enemies:
+            hits += pygame.sprite.spritecollide(self, globals.enemy_sprites, False)
+        if self.damage_player:
+            hits += pygame.sprite.spritecollide(self, globals.player_sprites, False)
+        
         if hits:
             try:
                 if self.speed_x < 0:
@@ -118,6 +123,7 @@ class Projectile(pygame.sprite.Sprite):
 
             except AttributeError:
                 pass
+
             self.state = "predeath"
 
         if self.speed_x < 0:
@@ -137,28 +143,9 @@ class Projectile(pygame.sprite.Sprite):
         tlhit: bool = False
         brhit: bool = False
         blhit: bool = False
-        hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
-        for hit in hits:
-            if self.speed_x > 0:
-                self.rect.right = hit.rect.left
-                self.speed_x -= self.speed_x * (2)
-            if self.speed_x < 0:
-                self.rect.left = hit.rect.right
-                self.speed_x -= self.speed_x * (2)
 
+        bounced: bool = False
         hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
-        for hit in hits:
-            if self.speed_y > 0:
-                self.rect.bottom = hit.rect.top
-                self.speed_y -= self.speed_y * (2)
-            if self.speed_y < 0:
-                self.rect.top = hit.rect.bottom
-                self.speed_y -= self.speed_y * (2)
-                
-            self.speed_x *= 0.8
-            self.speed_y *= 0.9
-
-        """ hits = pygame.sprite.spritecollide(self, globals.current_level.wall_list, False)
         for hit in hits:
             if pygame.Rect.collidepoint(hit.rect,self.rect.topright):
                 trhit = True
@@ -172,20 +159,23 @@ class Projectile(pygame.sprite.Sprite):
             if trhit and brhit and self.speed_x > 0:
                 self.rect.right = hits[0].rect.left
                 self.speed_x -= self.speed_x * (2)
+                bounced = True
             if tlhit and blhit and self.speed_x < 0:
                 self.rect.left = hits[0].rect.right
                 self.speed_x -= self.speed_x * (2)
+                bounced = True
             if blhit and brhit:
                 self.rect.bottom = hits[0].rect.top
                 self.speed_y -= self.speed_y * (2)
+                bounced = True
             if tlhit and trhit:
                 self.rect.top = hits[0].rect.bottom
-                self.speed_y -= self.speed_y * (2) """
-
-
+                self.speed_y -= self.speed_y * (2)
+                bounced = True
             
-            #self.speed_y -= self.speed_y * (2 * 0.9)
-            #self.speed_x -= self.speed_x * (2 * 0.9)
+        if bounced:
+            self.speed_y -= self.speed_y * 0.2
+            self.speed_x -= self.speed_x * 0.1
             
         
 
@@ -253,14 +243,25 @@ class Grenade(Projectile):
                                     self.sheet.get_image(25,52,9,9),
                                     self.sheet.get_image(38,52,9,9),]
 
-class EnemyGrenade(Grenade):
+class EnemyGrenade(Projectile):
     def __init__(self, pos_x, pos_y, speed_x, speed_y, direction):
         super(Projectile, self).__init__()
         Projectile.__init__(self, pos_x, pos_y, speed_x, speed_y, direction)
-        self.surf = self.sheet.get_image(2,42,8,8)
+        self.damage = 16
+        self.explosive = True
+        self.surf = self.sheet.get_image(2,52,8,8)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
+        self.knockback = 3
+        self.acceleration = -0.01
+        self.deathanim = BigExplosion
+        self.gravity = 0.1
+        self.bouncy = True
+        self.lifespan = 120
         self.damage_player = True
         self.damage_enemies = False
-        self.frames: list[Surface] = [self.sheet.get_image(2,42,8,8)]
+        self.frames: list[Surface] = [self.sheet.get_image(1,42,9,9),
+                                    self.sheet.get_image(13,42,9,9),
+                                    self.sheet.get_image(25,42,9,9),
+                                    self.sheet.get_image(38,42,9,9),]

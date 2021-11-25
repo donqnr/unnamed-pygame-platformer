@@ -96,6 +96,8 @@ class Player(pygame.sprite.Sprite):
         # Add the player to the player and visible sprite groups
         globals.player_sprites.add(self)
         globals.visible_sprites.add(self)
+
+        self.knockback_mult = 0
         
     # Update the player character
     def update(self):
