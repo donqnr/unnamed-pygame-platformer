@@ -1,7 +1,7 @@
 import pygame
 from pygame.surface import Surface
 from scripts.fx import Effect, PlasmaShotDeath, MGShotDeath, BigExplosion
-from scripts import globals, spritesheet, enemies
+from scripts import globals, spritesheet
 import math
 
 class Projectile(pygame.sprite.Sprite):
