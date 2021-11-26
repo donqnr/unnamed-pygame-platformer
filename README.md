@@ -9,7 +9,7 @@ Python 3: https://www.python.org/
 
 Pygame: https://www.pygame.org
 
-Run __init__.py to start the game  
+Run \_\_init\_\_.py to start the game  
 level_editor.py for the level editor
 
 Game Controls:
