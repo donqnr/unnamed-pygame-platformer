@@ -159,6 +159,7 @@ enemylist = [things.Enemy_01,
 pickuplist = [things.MGAmmo,
             things.Stimpack,
             things.RocketAmmo,
+            things.GrenadeAmmo,
             ]
 
 # Position of the cursor on the screen

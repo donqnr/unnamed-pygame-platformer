@@ -10,7 +10,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super(Enemy, self).__init__()
         pygame.sprite.Sprite.__init__(self)
-        self.sheet = spritesheet.SpriteSheet("assets/sprites/enemies.png", 1)
+        self.sheet = spritesheet.SpriteSheet("assets/sprites/enemies2.png", 1)
         self.surf = self.sheet.get_image(1,31,16,13)
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
@@ -216,12 +216,15 @@ class GrenadeEnemy(Enemy):
         self.fire_cd_counter = 0
         self.still_frame = self.sheet.get_image(1,279,16,20)
 
+        self.attack_anim_speed = 6
+        self.attack_anim_duration = 0
+
         self.run_left = [self.sheet.get_image(1,279,16,20),
-                        self.sheet.get_image(19,279,16,20),
-                        self.sheet.get_image(37,279,16,20),
-                        self.sheet.get_image(55,279,16,20),
-                        self.sheet.get_image(73,279,16,20),
-                        self.sheet.get_image(91,279,16,20),]
+                         self.sheet.get_image(19,279,16,20),
+                         self.sheet.get_image(37,279,16,20),
+                         self.sheet.get_image(55,279,16,20),
+                         self.sheet.get_image(73,279,16,20),
+                         self.sheet.get_image(91,279,16,20),]
 
         self.run_right = [self.sheet.get_image(1,323,16,20),
                         self.sheet.get_image(19,323,16,20),
@@ -229,6 +232,18 @@ class GrenadeEnemy(Enemy):
                         self.sheet.get_image(55,323,16,20),
                         self.sheet.get_image(73,323,16,20),
                         self.sheet.get_image(91,323,16,20),]
+
+        self.attack_left = [self.sheet.get_image(1,301,16,20),
+                            self.sheet.get_image(19,301,16,20),
+                            self.sheet.get_image(37,301,16,20),
+                            self.sheet.get_image(55,301,16,20),]
+
+        self.attack_right = [self.sheet.get_image(1,345,16,20),
+                            self.sheet.get_image(19,345,16,20),
+                            self.sheet.get_image(37,345,16,20),
+                            self.sheet.get_image(55,345,16,20),]
+
+        
 
     def update(self):
 
@@ -246,6 +261,8 @@ class GrenadeEnemy(Enemy):
             self.chase()
         elif self.state == "attack":
             self.attack()
+        elif self.state == "attackanim":
+            self.attackanim()
                    
     def wait(self):
         self.change_x = 0
@@ -278,15 +295,34 @@ class GrenadeEnemy(Enemy):
                     self.change_x = self.max_speed
 
         if pygame.sprite.spritecollide(self, globals.player_sprites, False, pygame.sprite.collide_circle_ratio(7)) and self.fire_cd_counter <= 0:
-            self.state = "attack"
+            self.state = "attackanim"
 
         self.move()
 
     def attack(self):
-        if self.direction == 'r':
-            proj = EnemyGrenade(self.rect.centerx, self.rect.centery, 2, -1.5, self.direction)
-        elif self.direction == 'l':
-            proj = EnemyGrenade(self.rect.centerx, self.rect.centery, -2, -1.5, self.direction)
-        self.fire_cd_counter = self.fire_cooldown
-        self.state = "chase"
+        if self.fire_cd_counter <= 0:
+            if self.direction == 'r':
+                proj = EnemyGrenade(self.rect.centerx, self.rect.centery, 2, -1.5, self.direction)
+            elif self.direction == 'l':
+                proj = EnemyGrenade(self.rect.centerx, self.rect.centery, -2, -1.5, self.direction)
+            self.fire_cd_counter = self.fire_cooldown
+
+    def attackanim(self):
+        anim = []
+
+        if (self.direction == 'r'):
+            anim = self.attack_right
+        elif (self.direction == 'l'):
+            anim = self.attack_left
+
+        if self.attack_anim_duration // self.attack_anim_speed >= len(anim):
+            # Once it reaches the last sprite, reset counter and set state back to chase
+            self.attack_anim_duration = 0
+            self.state = "chase"
+
+        if self.attack_anim_duration // self.attack_anim_speed < len(anim):
+            if self.attack_anim_duration // self.attack_anim_speed == 2:
+                self.attack()
+            self.surf = anim[self.attack_anim_duration // self.attack_anim_speed]
+            self.attack_anim_duration += 1
 
