@@ -54,12 +54,12 @@ class MGAmmo(Pickup):
         self.rect = self.surf.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
-        self.message = "MG Rounds +20"
+        self.message = "MG Rounds +40"
         
     def do_effect(self, hit):
         try:
             if hit.weapons[1].ammo < hit.weapons[1].max_ammo:
-                hit.weapons[1].ammo += 20
+                hit.weapons[1].ammo += 40
                     
                 if hit.weapons[1].ammo > hit.weapons[1].max_ammo:
                     hit.weapons[1].ammo = hit.weapons[1].max_ammo

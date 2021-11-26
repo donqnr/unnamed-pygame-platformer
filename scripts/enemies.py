@@ -75,7 +75,7 @@ class Enemy(pygame.sprite.Sprite):
             # Stop the character falling if there's something below him
             self.change_y = 0
     
-        # Check for collision on platforms, the player can move and jump through them, while being able to land and stand on top of them
+        # Check for collision on platforms, the character can move and jump through them, while being able to land and stand on top of them
         platformhits = pygame.sprite.spritecollide(self, globals.current_level.platform_list, False)
         for plat in platformhits:
             if self.change_y > 0:

@@ -88,8 +88,8 @@ class MachineGun(Weapon):
         self.projectile_speed = [10.5,0]
         self.auto = True
         self.firerate = 3
-        self.ammo = 0
-        self.max_ammo = 100
+        self.ammo = 100
+        self.max_ammo = 200
         self.ammo_consumption = 1
         self.bullet_spread = 0.5
         self.name = "Machine Gun"
@@ -104,7 +104,7 @@ class RocketLauncher(Weapon):
         self.projectile_speed = [2,0]
         self.auto = False
         self.firerate = 30
-        self.ammo = 0
+        self.ammo = 5
         self.max_ammo = 20
         self.ammo_consumption = 1
         self.bullet_spread = 0
@@ -118,7 +118,7 @@ class GrenadeLauncher(Weapon):
         self.projectile_speed = [4,-1.25]
         self.auto = False
         self.firerate = 30
-        self.ammo = 20
+        self.ammo = 5
         self.max_ammo = 20
         self.ammo_consumption = 1
         self.bullet_spread = 0
