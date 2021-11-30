@@ -21,6 +21,7 @@ class Projectile(pygame.sprite.Sprite):
         self.lifetime: int = 0
         self.state: str = "spawn"
         self.explosive: bool = False
+        self.explosion_radius: float = 1.5
         globals.active_sprites.add(self)
         globals.visible_sprites.add(self)
         self.deathanimtime: int = 0
@@ -63,8 +64,11 @@ class Projectile(pygame.sprite.Sprite):
         self.state = "death"
 
     def blast_damage(self):
-        hits = pygame.sprite.spritecollide(self, globals.enemy_sprites, False, pygame.sprite.collide_circle_ratio(1.5))
-        hits += pygame.sprite.spritecollide(self, globals.player_sprites, False, pygame.sprite.collide_circle_ratio(1.5))
+        hits = []
+        if self.damage_enemies:
+            hits += pygame.sprite.spritecollide(self, globals.enemy_sprites, False, pygame.sprite.collide_circle_ratio(self.explosion_radius))
+        if self.damage_player:
+            hits += pygame.sprite.spritecollide(self, globals.player_sprites, False, pygame.sprite.collide_circle_ratio(self.explosion_radius))
         for hit in hits:
             try:
                 hit.takedamage(self.damage)
@@ -138,6 +142,7 @@ class Projectile(pygame.sprite.Sprite):
         if hits:
             self.state = "predeath"
 
+    # Bouncing function is still work-in-progress
     def bounce(self):
         trhit: bool = False
         tlhit: bool = False
