@@ -52,11 +52,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = pos_y
 
         # Set the maximum falling speed
-        self.max_fall_speed = 4.0
+        self.max_fall_speed: float = 4.0
 
         # Variables for movement
-        self.change_x = 0
-        self.change_y = 0
+        self.change_x: float = 0
+        self.change_y: float = 0
 
         # List of weapons
         self.weapons: Weapon = [PlasmaRifle(),
@@ -105,11 +105,9 @@ class Player(pygame.sprite.Sprite):
         # Get what keys are being pressed
         pressed_keys = pygame.key.get_pressed()
 
-        # Set the ground check actor below the player character
-        #self.groundcheck.setpos(self.rect.x,self.rect.bottom)
+        
 
         if self.state == "normal":
-            # Call the move function, pass the keypresses to it
             self.equipped_weapon.update()
         if self.state == "death":
             self.death()
@@ -130,6 +128,8 @@ class Player(pygame.sprite.Sprite):
                 globals.visible_sprites.add(self)
             else:
                 globals.visible_sprites.remove(self)
+
+        # Set the ground check actor below the player character
         self.groundcheck.setpos(self.rect.x,self.rect.bottom)
 
     # Movement function
