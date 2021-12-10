@@ -83,12 +83,14 @@ while globals.running:
 #        if is_onscreen(thing):
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
 
+    # Draw HUD elements
     if not globals.hide_hud:
         screen.blit(globals.hud.hp.text, (globals.hud.hp.rect.x,globals.hud.hp.rect.y))
         screen.blit(globals.hud.ammo.text, (globals.hud.ammo.rect.x,globals.hud.ammo.rect.y))
         screen.blit(globals.hud.wpn.text, (globals.hud.wpn.rect.x,globals.hud.wpn.rect.y))
         screen.blit(globals.hud.msg.text, (globals.hud.msg.rect.x,globals.hud.msg.rect.y))
 
+    # Update HUD elements
     globals.hud.update()
 
     inp.CheckInput()

@@ -105,8 +105,6 @@ class Player(pygame.sprite.Sprite):
         # Get what keys are being pressed
         pressed_keys = pygame.key.get_pressed()
 
-        
-
         if self.state == "normal":
             self.equipped_weapon.update()
         if self.state == "death":
