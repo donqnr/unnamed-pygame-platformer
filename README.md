@@ -1,7 +1,5 @@
 # unnamed-pygame-platformer
 
-![screenshot](https://i.imgur.com/V6c3JNa.png)
-
 A platformer developed with pygame, along with a level editor
 
 Very work-in-progress, even moreso with the level editor
@@ -44,3 +42,7 @@ Level editor controls:
 
     F6: Saves the level into (Currently only saves into saved_level.json, be sure to backup/rename the file after saving to prevent it from being overwritten)
     F7: Loads a level (Again, currently only loads saved_level.json, if there is one)
+   
+![screenshot](https://i.imgur.com/V6c3JNa.png)
+![screenshot](https://i.imgur.com/iopwe1t.png)
+![screenshot](https://i.imgur.com/ge2TcYV.png)
