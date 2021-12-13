@@ -1,6 +1,6 @@
 # unnamed-pygame-platformer
 
-![screenshot](https://imgur.com/V6c3JNa)
+![screenshot](https://i.imgur.com/V6c3JNa.png)
 
 A platformer developed with pygame, along with a level editor
 
