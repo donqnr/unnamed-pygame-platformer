@@ -15,11 +15,16 @@ paused: bool = False # Boolean to handle pausing
 running: bool = True # Boolean to keep the main loop running
 hide_hud: bool = False # Boolean to set HUD's visibility
 
-def changelevel(level_file):
+def changelevel(level_class: levels.Level):
+    current_level.destroy_level()
     bg_sprites.empty()
     enemy_sprites.empty()
     visible_sprites.empty()
     active_sprites.empty()
-    newlevel = levels.Customlevel(level_file)
+    newlevel = level_class
+    bg_sprites.add(newlevel.bg_list)
+    enemy_sprites.add(newlevel.enemy_list)
+
+    visible_sprites.add(newlevel.bg_list, newlevel.enemy_list, newlevel.wall_list, newlevel.platform_list, player_sprites)
     active_sprites.add(newlevel.enemy_list)
     return newlevel

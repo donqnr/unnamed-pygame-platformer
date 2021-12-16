@@ -1,5 +1,6 @@
 import pygame
-from scripts import globals
+from scripts import globals, levels
+from scripts.levels import Level02
 
 from pygame.locals import (
     K_ESCAPE,
@@ -40,11 +41,12 @@ class InputHandler():
                         globals.paused = False
                     else:
                         globals.paused = True
-                """ if event.key == pygame.K_F1:
+                if event.key == pygame.K_F1:
+                    nextlevel = levels.Level02()
                     globals.current_level.destroy_level()
-                    globals.current_level = changelevel("levl2.json")
+                    globals.current_level = globals.changelevel(nextlevel)
 
-                    player.rect.topleft = globals.current_level.player_start
+                    """ player.rect.topleft = globals.current_level.player_start
                     globals.visible_sprites.add(player) """
                 # Was it the Escape key? If so, stop the loop.
                 if event.key == K_ESCAPE:

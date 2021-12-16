@@ -8,7 +8,7 @@ class Level():
     """ Super-class for levels, each level is a child class of this """
     def __init__(self):
 
-        # Set up lists for platforms and walls
+        # Set up lists for platform, walls, enemies etc.
         self.platform_list = pygame.sprite.Group()
         self.wall_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
@@ -102,4 +102,12 @@ class Level01(Level):
         super(Level, self).__init__()
 
         self.build_level('level01.json')
+
+class Level02(Level):
+    def __init__(self):
+        Level.__init__(self)
+        super(Level, self).__init__()
+
+        self.build_level('level02.json')
+        self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg2.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
 
