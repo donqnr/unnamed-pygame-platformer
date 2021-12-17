@@ -20,17 +20,19 @@ def is_onscreen(thing):
     return False
 
 def initplayer():
-    p = player.Player(globals.current_level.player_start[0],globals.current_level.player_start[1])
+    p = player.Player(globals.current_level.player_start[0],
+    globals.current_level.player_start[1])
+    
     return p
 
 # Set the level to load
 globals.current_level = levels.Level01()
 
 # Initialize the player class and pass the current level to it, for collision detection
-p1: player.Player = initplayer()
+globals.p1 = initplayer()
 
 # Initialize the HUD
-globals.hud.set_player(p1)
+globals.hud.set_player(globals.p1)
 
 globals.active_sprites.add(globals.current_level.enemy_list)
 
@@ -43,7 +45,7 @@ cam = cam.Cam()
 clock = pygame.time.Clock()
 
 inp = input.InputHandler()
-inp.player = p1
+inp.player = globals.p1
 
 # Main loop
 while globals.running:
@@ -52,17 +54,17 @@ while globals.running:
     clock.tick(constants.FRAMERATE)
 
     # If the player gets a certain amount of distance away from the center of the screen, the camera starts following them
-    if p1.rect.right + cam.get_screen_center_x() > 5:
-        cam.set_pos_x(p1.rect.right - constants.SCREEN_WIDTH * .5 - 5)
+    if globals.p1.rect.right + cam.get_screen_center_x() > 5:
+        cam.set_pos_x(globals.p1.rect.right - constants.SCREEN_WIDTH * .5 - 5)
     
-    if p1.rect.left + cam.get_screen_center_x() < -40:
-        cam.set_pos_x(p1.rect.left - constants.SCREEN_WIDTH * .5 - -40)
+    if globals.p1.rect.left + cam.get_screen_center_x() < -40:
+        cam.set_pos_x(globals.p1.rect.left - constants.SCREEN_WIDTH * .5 - -40)
 
-    if p1.rect.bottom + cam.get_screen_center_y() > 15:
-        cam.set_pos_y(p1.rect.bottom - constants.SCREEN_HEIGHT * .5 - 15)
+    if globals.p1.rect.bottom + cam.get_screen_center_y() > 15:
+        cam.set_pos_y(globals.p1.rect.bottom - constants.SCREEN_HEIGHT * .5 - 15)
         
-    if p1.rect.top + cam.get_screen_center_y() < -30:
-        cam.set_pos_y(p1.rect.top - constants.SCREEN_HEIGHT * .5 - -30)
+    if globals.p1.rect.top + cam.get_screen_center_y() < -30:
+        cam.set_pos_y(globals.p1.rect.top - constants.SCREEN_HEIGHT * .5 - -30)
 
     # Draw the background of the current level
     screen.blit(globals.current_level.background, (0,0))

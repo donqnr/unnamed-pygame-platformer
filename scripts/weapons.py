@@ -1,5 +1,5 @@
 import pygame
-from scripts.projectiles import EnemyGrenade, MGShot, PlasmaRifleShot, Projectile, RocketShot, Grenade
+from scripts.projectiles import MGShot, PlasmaRifleShot, Projectile, RocketShot, Grenade
 from scripts import globals
 from random import random
 # 
@@ -94,7 +94,7 @@ class MachineGun(Weapon):
         self.bullet_spread = 0.5
         self.name = "Machine Gun"
 
-# Rocket Launcher
+# Rocket Launcher, it launches rockets
 
 class RocketLauncher(Weapon):
     def __init__(self, flip: bool = False):
@@ -110,6 +110,8 @@ class RocketLauncher(Weapon):
         self.bullet_spread = 0
         self.name = "Rocket Launcher"
 
+# Grenade Launcher, fires bouncy things that explode
+
 class GrenadeLauncher(Weapon):
     def __init__(self):
         super().__init__()
@@ -123,6 +125,8 @@ class GrenadeLauncher(Weapon):
         self.ammo_consumption = 1
         self.bullet_spread = 0
         self.name = "Grenade Launcher"
+
+# Muzzleflash effect, appears whenever you fire
 
 class MuzzleFlash(pygame.sprite.Sprite):
     def __init__(self, owner):
