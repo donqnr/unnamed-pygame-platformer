@@ -361,3 +361,10 @@ class GrenadeAmmo(GrenadeAmmo):
         super(GrenadeAmmo, self).__init__(pos_x,pos_y)
         self.name = "GrenadeAmmo"
         self.type = "pickup"
+
+from scripts.triggers import LevelEnd
+class LevelEnd(LevelEnd):
+    def __init__(self, pos_x, pos_y):
+        super(LevelEnd, self).__init__(pos_x,pos_y)
+        self.name = "LevelEnd"
+        self.type = "trigger"

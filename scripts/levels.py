@@ -3,6 +3,7 @@ import pygame
 import json
 
 from scripts import constants, globals, platforms, things
+from scripts.triggers import LevelEnd
 
 class Level():
     """ Super-class for levels, each level is a child class of this """
@@ -14,6 +15,7 @@ class Level():
         self.enemy_list = pygame.sprite.Group()
         self.bg_list = pygame.sprite.Group()
         self.pickup_list = pygame.sprite.Group()
+        self.trigger_list = pygame.sprite.Group()
         self.player_start = (0,0)
         # Set the background image for the level
         self.background = pygame.transform.scale(pygame.image.load("assets/bg/bg1.png"),(constants.SCREEN_WIDTH,constants.SCREEN_HEIGHT))
@@ -43,6 +45,9 @@ class Level():
                 elif thing.type == "pickup":
                     self.pickup_list.add(thing)
                     globals.visible_sprites.add(thing)
+                elif thing.type == "pickup":
+                    self.trigger_list.add(thing)
+                    globals.visible_sprites.add(thing)
     
     def destroy_level(self):
         self.bg_list.empty()
@@ -50,8 +55,7 @@ class Level():
         self.platform_list.empty()
         self.enemy_list.empty()
         self.pickup_list.empty()
-
-
+        self.trigger_list.empty()
 
 class TestLevel(Level):
     def __init__(self):

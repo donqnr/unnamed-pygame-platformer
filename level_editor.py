@@ -28,6 +28,7 @@ from pygame.locals import (
     K_3,
     K_4,
     K_5,
+    K_6,
     K_F5,
     K_F6,
     K_F7,
@@ -83,6 +84,9 @@ def load_level():
             elif thing.type == "pickup":
                 current_level.pickup_list.add(thing)
                 globals.active_sprites.add(thing)
+            elif thing.type == "trigger":
+                current_level.pickup_list.add(thing)
+                globals.active_sprites.add(thing)
             thing_list.add(thing)
         
 def add_to_list(tile):
@@ -95,6 +99,8 @@ def add_to_list(tile):
     elif tile.type == "enemy":
         current_level.enemy_list.add(tile)
     elif tile.type == "pickup":
+        current_level.pickup_list.add(tile)
+    elif tile.type == "trigger":
         current_level.pickup_list.add(tile)
     globals.active_sprites.add(tile)
 
@@ -162,6 +168,10 @@ pickuplist = [things.MGAmmo,
             things.GrenadeAmmo,
             ]
 
+# List of triggers that can be placed
+triggerlist = [things.LevelEnd,
+            ]
+
 # Position of the cursor on the screen
 pos = (0,0)
 
@@ -171,6 +181,8 @@ selected_block = 0
 selected_enemy = 0
 # Which pickup from the list is selected and gets placed
 selected_pickup = 0
+# Which trigger from the list is selected and gets placed
+selected_trigger = 0
 
 selected_thing_list = blocklist
 selected_thing = selected_block
@@ -179,7 +191,7 @@ blockpreview = selected_thing_list[selected_thing]((pos[0] - cam.x), (pos[1] - c
 blockpreview.surf.set_alpha(150)
 
 # List of layers to place things in
-thing_types = ['wall', 'platform', 'bg', 'fg', 'enemy', 'pickup']
+thing_types = ['wall', 'platform', 'bg', 'fg', 'enemy', 'pickup', 'trigger']
 # Variable for determining which layer to place a tile (background, foreground, walls) or if it's an enemy or a pickup
 selected_thing_type = "wall"
 # Initialize the sprite which follows the cursor
@@ -242,6 +254,12 @@ while running:
                 selected_thing_list = pickuplist
                 selected_thing = selected_pickup
                 print("Pickup")
+            # Set the tile to be placed to be a trigger
+            if event.key == K_6:
+                selected_thing_type = "trigger"
+                selected_thing_list = triggerlist
+                selected_thing = selected_trigger
+                print("Trigger")
             # Save the current level into a file                    
             if event.key == K_F6:
                 save_level(thing_list)
@@ -289,6 +307,9 @@ while running:
 
     for thing in current_level.pickup_list:
         screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
+
+    for thing in current_level.trigger_list:
+        screen.blit(thing.surf,(thing.rect.x + cam.x, thing.rect.y + cam.y))
         
     screen.blit(player.surf,(player.rect.x + cam.x, player.rect.y + cam.y))
     # Blit the preview for the selected block on the cursor
@@ -313,6 +334,8 @@ while running:
             hits = pygame.sprite.spritecollide(tile, current_level.enemy_list, False) 
         if selected_thing_type == "pickup":
             hits = pygame.sprite.spritecollide(tile, current_level.pickup_list, False) 
+        if selected_thing_type == "trigger":
+            hits = pygame.sprite.spritecollide(tile, current_level.trigger_list, False) 
         if len(hits) == 0:
             globals.visible_sprites.add(tile)
             print(tile.name + " placed at " + str((pos[0] - cam.x) // 8 * 8) + " " + str((pos[1] - cam.y) // 8 * 8) + " as " + selected_thing_type)
